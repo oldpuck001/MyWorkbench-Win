@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            font-size: 14px;
+        }
+        .sidebar.hidden {
+            width: 0;
+            padding: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 8px;
+            background-color: #fff;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .sidebar ul li:hover {
+            background-color: #ddd;
+        }
+        .sidebar ul ul {
+            display: none;
+            padding-left: 20px;
+        }
+        .sidebar ul ul li {
+            margin-bottom: 5px;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            margin-left: 0px;
+        }
+        .content iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+        .toggle-btn {
+            position: fixed; /* 使用fixed来固定按钮 */
+            top: 50%;
+            left: 270px;  /* 默认状态下按钮在侧边栏外 */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 5px;
+            cursor: pointer;
+            z-index: 9;
+            width: 20px;
+            height: 80px;
+            transform: translateY(-50%);
+            text-align: center;
+            line-height: 1.2;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        .sidebar.hidden + .toggle-btn {
+            left: 0; /* 当侧边栏隐藏时，按钮紧靠左边 */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <ul>
+            <li data-src="instruction.html">使用说明</li>
+            <li>
+                倒计时
+                <ul>
+                    <li data-src="./countdown/dashboard.html">看板</li>
+                    <li data-src="./countdown/settings.html">设置</li>
+                </ul>
+            </li>
+            <li>
+                电子表格工具
+                <ul>
+                    <li data-src="./xlsx_xls_tools/splice.html">电子表格拼接</li>
+                    <li data-src="./xlsx_xls_tools/filling.html">自动填充空行</li>
+                    <li data-src="./xlsx_xls_tools/regex.html">使用正则表达式筛选</li>
+                    <li data-src="./xlsx_xls_tools/subtotals.html">分类汇总成二维表格</li>
+                </ul>
+            </li>
+            <li>
+                PDF文件工具
+                <ul>
+                    <li data-src="./pdf_tools/split.html">PDF文件分割</li>
+                </ul>
+            </li>
+            <li>
+                会计与审计
+                <ul>
+                    <li data-src="./accounting_audit/china_mainland_annual_audit/html_css_js/china_mainland_annual_audit_index.html">中国大陆年度报告审计</li>
+                </ul>
+            </li>
+            <li>
+                文件名修改工具
+                <ul>
+                    <li data-src="./filename_tools/automatic.html">自动修改文件名</li>
+                    <li data-src="./filename_tools/character.html">按前n个字符分类修改文件名</li>
+                    <li data-src="./filename_tools/image.html">图片文件名修改</li>
+                    <li data-src="./filename_tools/sort.html">按文件名分类</li>
+                    <li data-src="./filename_tools/export.html">输出文件名汇总</li>
+                </ul>
+            </li>
+            <li>
+                语言学习辅助工具
+                <ul>
+                    <li data-src="./study_language_tools/study_language_tools.html">单词表转音频</li>
+                </ul>
+            </li>
+            <li>
+                视频剪辑辅助工具
+                <ul>
+                    <li data-src="./video_editing_aids/text_to_audio.html">文本转语音</li>
+                    <li data-src="./video_editing_aids/cc.html">CC字幕辅助</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <button class="toggle-btn">→<br>←</button>
+    <div class="content">
+        <iframe id="mainFrame" src="instruction.html"></iframe>
+    </div>
+    <script>
+        document.querySelectorAll('.sidebar > ul > li').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // 检查是否有子菜单
+                const sublist = this.querySelector('ul');
+                if (sublist) {
+                    // 如果有子菜单，则展开/隐藏子菜单
+                    e.stopPropagation();
+                    sublist.classList.toggle('active');
+                    sublist.style.display = sublist.style.display === 'block' ? 'none' : 'block';
+                } else {
+                    // 如果没有子菜单，则加载相应的页面
+                    const src = this.getAttribute('data-src');
+                    if (src) {
+                        e.stopPropagation();
+                        document.getElementById('mainFrame').setAttribute('src', src);
+                    }
+                }
+            });
+        });
+
+        document.querySelectorAll('.sidebar ul ul li').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const src = this.getAttribute('data-src');
+                if (src) {
+                    document.getElementById('mainFrame').setAttribute('src', src);
+                }
+            });
+        });
+
+        const sidebar = document.querySelector('.sidebar');
+        const content = document.querySelector('.content');
+        const toggleBtn = document.querySelector('.toggle-btn');
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+        });
+    </script>
+</body>
+</html>

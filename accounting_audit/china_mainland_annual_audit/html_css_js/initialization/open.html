@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>打开项目文件夹</title>
+    <style>
+        /* 隐藏原始的文件输入控件 */
+        #folderPicker {
+            display: none;
+        }
+        /* 自定义按钮样式 */
+        .custom-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .custom-button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .form-group label {
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .form-group input {
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">打开项目文件夹</h1>
+    <div style="text-align: center;">
+        <div class="form-group">
+            <label for="defaultPathInput">项目文件夹所在路径：</label>
+            <input type="text" id="defaultPathInput" placeholder="">
+        </div>
+        <!-- 隐藏的文件夹选择输入框 -->
+        <input type="file" id="folderPicker" webkitdirectory directory multiple>
+        <div style="margin-top: 20px;">请确保选择的文件夹不为空</div>
+        <br>
+        <!-- 自定义按钮，点击后触发文件夹选择 -->
+        <button class="custom-button" onclick="document.getElementById('folderPicker').click()">选择项目文件夹</button>
+        <br>
+        <div id="selectedFolderPath" style="margin-top: 20px;"></div>
+    </div>
+
+    <script>
+        // 页面加载时，从本地存储中获取并显示文件夹路径和默认路径
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedFolderPath = localStorage.getItem('selectedFolderPath');
+            const selectedFolderPath = document.getElementById('selectedFolderPath');
+            const defaultPathInput = document.getElementById('defaultPathInput');
+            
+            if (savedFolderPath) {
+                selectedFolderPath.textContent = "项目文件夹路径: " + savedFolderPath;
+            }
+
+            // 通过fetch请求获取默认路径
+            fetch('/get-default-path')
+                .then(response => response.json())
+                .then(data => {
+                    defaultPathInput.placeholder = data.defaultPath;
+                    defaultPathInput.value = data.defaultPath; // 设置输入框的默认值
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        document.getElementById('folderPicker').addEventListener('change', function(event) {
+            const folderPicker = event.target;
+            const selectedFolderPath = document.getElementById('selectedFolderPath');
+            const defaultPathInput = document.getElementById('defaultPathInput');
+            let fullPath = '';
+
+            if (folderPicker.files.length > 0) {
+                // 获取相对路径并提取文件夹路径
+                fullPath = folderPicker.files[0].webkitRelativePath.split('/')[0];
+            }
+
+            fetch('/your-backend-endpoint', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ folderPath: fullPath, defaultPath: defaultPathInput.value })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.projectFolder) {
+                    // 将完整路径保存到本地存储
+                    localStorage.setItem('selectedFolderPath', data.projectFolder);
+                    // 将默认路径保存到本地存储
+                    localStorage.setItem('defaultPath', data.defaultPath);
+                    // 更新路径标签
+                    selectedFolderPath.textContent = "项目文件夹路径: " + data.projectFolder;
+                } else {
+                    selectedFolderPath.textContent = "错误: " + data.error;
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>

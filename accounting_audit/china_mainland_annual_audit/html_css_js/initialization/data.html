@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导入与更换数据</title>
+    <style>
+        .file-input {
+            display: none;
+        }
+        .custom-button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 200px;
+            margin: 5px;
+        }
+        .custom-button:hover {
+            background-color: #0056b3;
+        }
+        .content {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+        }
+        body {
+            font-family: "Arial", "Helvetica", sans-serif; /* 使用常见的替代字体 */
+        }
+        #apiKeyInput {
+            width: 300px; /* 宽度，可以根据需要调整 */
+            height: 43px; /* 高度，可以根据需要调整 */
+            font-size: 16px; /* 字体大小 */
+            padding: 10px; /* 内边距，增加输入框内的空间 */
+            border-radius: 5px; /* 圆角边框 */
+            border: 1px solid #ccc; /* 边框颜色 */
+            box-sizing: border-box; /* 确保内边距不会影响总宽度和高度 */
+        }
+        #periodInput, #deadlineInput{
+            width: 150px; /* 宽度，可以根据需要调整 */
+            height: 43px; /* 高度，可以根据需要调整 */
+            font-size: 16px; /* 字体大小 */
+            padding: 10px; /* 内边距，增加输入框内的空间 */
+            border-radius: 5px; /* 圆角边框 */
+            border: 1px solid #ccc; /* 边框颜色 */
+            box-sizing: border-box; /* 确保内边距不会影响总宽度和高度 */
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <h1 style="text-align: center;">数据导入页面</h1>
+    <div style="text-align: center;">
+        <input type="file" id="fileInputQcc" class="file-input">
+        <button class="custom-button" onclick="handleFileUploadQcc()">企查查Excel操作版</button>
+        <input type="file" id="fileInputBalanceSheet" class="file-input">
+        <button class="custom-button" onclick="handleFileUploadBalanceSheet()">资产负债表</button>
+        <input type="file" id="fileInputProfitSheet" class="file-input">
+        <button class="custom-button" onclick="handleFileUploadProfitSheet()">利润表</button>
+        <input type="file" id="fileInputCashFlow" class="file-input">
+        <button class="custom-button" onclick="handleFileUploadCashFlow()">现金流量表</button>
+        <input type="file" id="fileInputEquityChange" class="file-input">
+        <button class="custom-button" onclick="handleFileUploadEquityChange()">所有者权益变动表</button>
+        <input type="file" id="fileInputAccountBalance" class="file-input">
+        <button class="custom-button" onclick="handleFileUploadAccountBalance()">科目余额表</button>
+        <input type="file" id="fileInputChronologicalAccount" class="file-input">
+        <button class="custom-button" onclick="handleFileUploadChronologicalAccount()">序时帐</button>
+        <button class="custom-button" onclick="showperiodInput()">审计期间与截止日</button>
+        <button class="custom-button" onclick="showApiKeyInput()">ChatGPT API Key</button>
+    </div>
+    <div id="file-info"></div>
+    <div id="content" class="content">
+        请选择上面的一个按钮以显示内容。
+    </div>
+
+    <script>
+        function handleFileUploadQcc() {
+            handleFileUpload('fileInputQcc', '/upload-file/qcc');
+        }
+
+        function handleFileUploadBalanceSheet() {
+            handleFileUpload('fileInputBalanceSheet', '/upload-file/balanceSheet');
+        }
+
+        function handleFileUploadProfitSheet() {
+            handleFileUpload('fileInputProfitSheet', '/upload-file/profitSheet');
+        }
+
+        function handleFileUploadCashFlow() {
+            handleFileUpload('fileInputCashFlow', '/upload-file/cashFlow');
+        }
+
+        function handleFileUploadEquityChange() {
+            handleFileUpload('fileInputEquityChange', '/upload-file/equityChange');
+        }
+
+        function handleFileUploadAccountBalance() {
+            handleFileUpload('fileInputAccountBalance', '/upload-file/accountBalance');
+        }
+
+        function handleFileUploadChronologicalAccount() {
+            handleFileUpload('fileInputChronologicalAccount', '/upload-file/chronologicalAccount');
+        }
+
+        function handleFileUpload(fileInputId, url) {
+            const fileInput = document.getElementById(fileInputId);
+            fileInput.onchange = function() {
+                const file = fileInput.files[0];
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('file', file);
+
+                    fetch(url, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        const extractedData = data.extracted_data;
+                        if (fileInputId === 'fileInputQcc') {
+                            displayQccExtractedData(extractedData);
+                        } else if (fileInputId === 'fileInputBalanceSheet') {
+                            displayBalanceSheetExtractedData(extractedData);
+                        } else if (fileInputId === 'fileInputProfitSheet') {
+                            displayProfitSheetExtractedData(extractedData);
+                        } else if (fileInputId === 'fileInputCashFlow') {
+                            displayCashFlowExtractedData(extractedData);
+                        } else if (fileInputId === 'fileInputEquityChange') {
+                            displayEquityChangeExtractedData(extractedData);
+                        } else if (fileInputId === 'fileInputAccountBalance') {
+                            displayAccountBalanceExtractedData(extractedData);
+                        } else if (fileInputId === 'fileInputChronologicalAccount') {
+                            displayChronologicalAccountExtractedData(extractedData);
+                        } else {
+                            console.error('Unknown fileInputId or url:', fileInputId, url);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                }
+            };
+            fileInput.click();
+        }
+
+        function displayQccExtractedData(extractedData) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.style.border = 'none';
+            let displayText = '提取企业基本信息数据结果：\n';
+            const data = extractedData[0];
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    let value = data[key][0];
+                    // 修改日期格式
+                    if (key === '成立日期' || key === '核准日期') {
+                        value = new Date(value).toLocaleDateString('zh-CN', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        }).replace('年', '年').replace('月', '月').replace('日', '日');
+                    }
+                    if (key === '经营范围') {
+                        value = value.match(/.{1,48}/g).join('\n        ');
+                    }
+                displayText += `${key}：${value}\n`;
+                }
+            }
+            contentDiv.innerHTML = `<pre style="text-align: left; margin-bottom: 10px;">${displayText}</pre>`;
+        }
+
+        function displayBalanceSheetExtractedData(extractedData) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.style.border = 'none';
+            // 添加表格上方的文字并使其靠左对齐
+            let displayText = `
+                <div style="text-align: left; margin-bottom: 10px;">提取资产负债表数据结果：</div>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">项目</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">期末余额</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">上年年末余额</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            const data = extractedData[0];
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    let project_value = data[key][0];
+                    let end_value = data[key][1];
+                    let previous_value = data[key][2];
+                    // 将数值格式化并加上千分位符，处理0的情况
+                    end_value = end_value === 0 ? '0.00' : parseFloat(end_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    previous_value = previous_value === 0 ? '0.00' : parseFloat(previous_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    displayText += `
+                        <tr>
+                            <td style="border: 1px solid black; padding: 8px; text-align: left;">${project_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${end_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${previous_value}</td>
+                        </tr>
+                    `;
+                }
+            }
+            displayText += `
+                    </tbody>
+                </table>
+            `;
+            contentDiv.innerHTML = displayText;
+        }
+
+        function displayProfitSheetExtractedData(extractedData) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.style.border = 'none';
+            // 添加表格上方的文字并使其靠左对齐
+            let displayText = `
+                <div style="text-align: left; margin-bottom: 10px;">提取利润表数据结果：</div>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">项目</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">本期金额</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">上期金额</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            const data = extractedData[0];
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    let project_value = data[key][0];
+                    let this_value = data[key][1];
+                    let previous_value = data[key][2];
+                    // 将数值格式化并加上千分位符，处理0的情况
+                    this_value = this_value === 0 ? '0.00' : parseFloat(this_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    previous_value = previous_value === 0 ? '0.00' : parseFloat(previous_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    displayText += `
+                        <tr>
+                            <td style="border: 1px solid black; padding: 8px; text-align: left;">${project_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${this_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${previous_value}</td>
+                        </tr>
+                    `;
+                }
+            }
+            displayText += `
+                    </tbody>
+                </table>
+            `;
+            contentDiv.innerHTML = displayText;
+        }
+
+        function displayCashFlowExtractedData(extractedData) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.style.border = 'none';
+            // 添加表格上方的文字并使其靠左对齐
+            let displayText = `
+                <div style="text-align: left; margin-bottom: 10px;">提取现金流量表数据结果：</div>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">项目</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">本期金额</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">上期金额</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            const data = extractedData[0];
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    let project_value = data[key][0];
+                    let this_value = data[key][1];
+                    let previous_value = data[key][2];
+                    // 将数值格式化并加上千分位符，处理0的情况
+                    this_value = this_value === 0 ? '0.00' : parseFloat(this_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    previous_value = previous_value === 0 ? '0.00' : parseFloat(previous_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    displayText += `
+                        <tr>
+                            <td style="border: 1px solid black; padding: 8px; text-align: left;">${project_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${this_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${previous_value}</td>
+                        </tr>
+                    `;
+                }
+            }
+            displayText += `
+                    </tbody>
+                </table>
+            `;
+            contentDiv.innerHTML = displayText;
+        }
+
+        function displayEquityChangeExtractedData(extractedData) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.style.border = 'none';
+            // 添加表格上方的文字并使其靠左对齐
+            let displayText = `
+                <div style="text-align: left; margin-bottom: 10px;">提取所有者权益变动表数据结果：</div>
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="4">项目</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" colspan="14">本期金额</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" colspan="14">上期金额</th>
+                        </tr>
+                        <tr>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" colspan="12">归属于母公司所有者权益</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="3">少数股东权益</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="3">所有者权益合计</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" colspan="12">归属于母公司所有者权益</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="3">少数股东权益</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="3">所有者权益合计</th>
+                        </tr>
+                        <tr>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">实收资本(或股本)</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" colspan="3">其他权益工具</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">资本公积</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">减：库存股</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">其他综合收益</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">专项储备</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">盈余公积</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">一般风险准备</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">未分配利润</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">小计</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">实收资本(或股本)</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" colspan="3">其他权益工具</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">资本公积</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">减：库存股</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">其他综合收益</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">专项储备</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">盈余公积</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">一般风险准备</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">未分配利润</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;" rowspan="2">小计</th>
+                        </tr>
+                        <tr>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">优先股</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">永续债</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">其他</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">优先股</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">永续债</th>
+                            <th style="border: 1px solid black; padding: 8px; text-align: center;">其他</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            const data = extractedData[0];
+            for (let key in data) {
+                if (data.hasOwnProperty(key)) {
+                    let project_value = data[key][0];
+                    let capital_value = data[key][1];
+                    let preferred_value = data[key][2];
+                    let perpetual_value = data[key][3];
+                    let other_value = data[key][4];
+                    let reserve_value = data[key][5];
+                    let stock_value = data[key][6];
+                    let income_value = data[key][7];
+                    let special_value = data[key][8];
+                    let surplus_value = data[key][9];
+                    let risk_value = data[key][10];
+                    let profit_value = data[key][11];
+                    let subtotal_value = data[key][12];
+                    let minority_value = data[key][13];
+                    let total_value = data[key][14];
+                    let capital_0_value = data[key][15];
+                    let preferred_0_value = data[key][16];
+                    let perpetual_0_value = data[key][17];
+                    let other_0_value = data[key][18];
+                    let reserve_0_value = data[key][19];
+                    let stock_0_value = data[key][20];
+                    let income_0_value = data[key][21];
+                    let special_0_value = data[key][22];
+                    let surplus_0_value = data[key][23];
+                    let risk_0_value = data[key][24];
+                    let profit_0_value = data[key][25];
+                    let subtotal_0_value = data[key][26];
+                    let minority_0_value = data[key][27];
+                    let total_0_value = data[key][28];
+
+                    // 将数值格式化并加上千分位符，处理0的情况
+                    capital_value = capital_value === 0 ? '0.00' : parseFloat(capital_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    preferred_value = preferred_value === 0 ? '0.00' : parseFloat(preferred_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    perpetual_value = perpetual_value === 0 ? '0.00' : parseFloat(perpetual_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    other_value = other_value === 0 ? '0.00' : parseFloat(other_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    reserve_value = reserve_value === 0 ? '0.00' : parseFloat(reserve_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    stock_value = stock_value === 0 ? '0.00' : parseFloat(stock_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    income_value = income_value === 0 ? '0.00' : parseFloat(income_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    special_value = special_value === 0 ? '0.00' : parseFloat(special_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    surplus_value = surplus_value === 0 ? '0.00' : parseFloat(surplus_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    risk_value = risk_value === 0 ? '0.00' : parseFloat(risk_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    profit_value = profit_value === 0 ? '0.00' : parseFloat(profit_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    subtotal_value = subtotal_value === 0 ? '0.00' : parseFloat(subtotal_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    minority_value = minority_value === 0 ? '0.00' : parseFloat(minority_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    total_value = total_value === 0 ? '0.00' : parseFloat(total_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    capital_0_value = capital_0_value === 0 ? '0.00' : parseFloat(capital_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    preferred_0_value = preferred_0_value === 0 ? '0.00' : parseFloat(preferred_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    perpetual_0_value = perpetual_0_value === 0 ? '0.00' : parseFloat(perpetual_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    other_0_value = other_0_value === 0 ? '0.00' : parseFloat(other_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    reserve_0_value = reserve_0_value === 0 ? '0.00' : parseFloat(reserve_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    stock_0_value = stock_0_value === 0 ? '0.00' : parseFloat(stock_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    income_0_value = income_0_value === 0 ? '0.00' : parseFloat(income_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    special_0_value = special_0_value === 0 ? '0.00' : parseFloat(special_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    surplus_0_value = surplus_0_value === 0 ? '0.00' : parseFloat(surplus_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    risk_0_value = risk_0_value === 0 ? '0.00' : parseFloat(risk_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    profit_0_value = profit_0_value === 0 ? '0.00' : parseFloat(profit_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    subtotal_0_value = subtotal_0_value === 0 ? '0.00' : parseFloat(subtotal_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    minority_0_value = minority_0_value === 0 ? '0.00' : parseFloat(minority_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    total_0_value = total_0_value === 0 ? '0.00' : parseFloat(total_0_value).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                    displayText += `
+                        <tr>
+                            <td style="border: 1px solid black; padding: 8px; text-align: left;">${project_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${capital_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${preferred_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${perpetual_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${other_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${reserve_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${stock_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${income_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${special_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${surplus_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${risk_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${profit_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${subtotal_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${minority_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${total_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${capital_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${preferred_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${perpetual_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${other_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${reserve_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${stock_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${income_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${special_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${surplus_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${risk_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${profit_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${subtotal_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${minority_0_value}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: right;">${total_0_value}</td>
+                        </tr>
+                    `;
+                }
+            }
+            displayText += `
+                    </tbody>
+                </table>
+            `;
+            contentDiv.innerHTML = displayText;
+        }
+
+        function displayAccountBalanceExtractedData(extractedData) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.style.border = 'none';
+            let displayText = '导入科目余额表结果：';
+            const data = extractedData[0];
+            displayText += data['message']
+            contentDiv.innerHTML = displayText;
+        }
+
+        function displayChronologicalAccountExtractedData(extractedData) {
+            const contentDiv = document.getElementById('content');
+            contentDiv.style.border = 'none';
+            let displayText = '导入序时帐结果：';
+            const data = extractedData[0];
+            displayText += data['message']
+            contentDiv.innerHTML = displayText;
+        }
+
+        function showperiodInput() {
+            document.getElementById('content').innerHTML = `
+                <h2>请输入审计期间与截止日</h2>
+                <input type="text" id="periodInput" placeholder="请输入期间">
+                <input type="text" id="deadlineInput" placeholder="请输入截止日">
+                <button class="custom-button" onclick="saveperiod()">保存</button>
+            `;
+        }
+
+        function saveperiod() {
+            const period = document.getElementById('periodInput').value;
+            const deadline = document.getElementById('deadlineInput').value;
+            fetch('/save-period-deadline', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ period_audit: period, deadline_audit: deadline })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('content').innerHTML = `<p>${data.message}</p>`;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        function showApiKeyInput() {
+            document.getElementById('content').innerHTML = `
+                <h2>ChatGPT API Key</h2>
+                <input type="text" id="apiKeyInput" placeholder="请输入API Key">
+                <button class="custom-button" onclick="saveApiKey()">保存</button>
+            `;
+        }
+
+        function saveApiKey() {
+            const apiKey = document.getElementById('apiKeyInput').value;
+            fetch('/save-api-key', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ api_key: apiKey })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('content').innerHTML = `<p>${data.message}</p>`;
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

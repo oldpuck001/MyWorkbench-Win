@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生成审计报告</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+        select, input[type="date"] {
+            padding: 5px;
+            font-size: 16px;
+        }
+        input[type="text"] {
+            padding: 5px;
+            font-size: 16px;
+            width: 300px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        #mainReportSuccessMessage, #attachmentSuccessMessage {
+            display: none;
+            margin-top: 20px;
+            color: green;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>生成审计报告</h1>
+
+    <div class="form-group">
+        <label for="auditOpinion">请选择审计意见:</label>
+        <select id="auditOpinion" name="auditOpinion">
+            <option value="standard">标准无保留意见</option>
+            <option value="non_standard">非标准无保留意见</option>
+            <option value="qualified">保留意见</option>
+            <option value="disclaimer">无法表示意见</option>
+            <option value="adverse">否定意见</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="reportDate">请选择审计报告出具日期:</label>
+        <input type="date" id="reportDate" name="reportDate">
+    </div>
+
+    <div class="form-group">
+        <label for="reportNumber">请输入报告文号:</label>
+        <input type="text" id="reportNumber" name="reportNumber" placeholder="XXX会审字【202X】第XXX号">
+    </div>
+
+    <button id="generateMainReportBtn">生成/更新审计报告正文</button>
+    <button id="generateAttachmentBtn">生成/更新会计报告附件</button>
+
+    <div id="mainReportSuccessMessage">审计报告正文生成/更新成功！</div>
+    <div id="attachmentSuccessMessage">会计报告附件生成/更新成功！</div>
+
+    <script>
+        // 设置默认日期为当天
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('reportDate').value = today;
+        });
+
+        document.getElementById('generateMainReportBtn').addEventListener('click', function() {
+            const auditOpinion = document.getElementById('auditOpinion').value;
+            const reportDate = document.getElementById('reportDate').value;
+            const reportNumber = document.getElementById('reportNumber').value;
+
+            if (!reportNumber) {
+                alert('请输入报告文号');
+                return;
+            }
+            if (auditOpinion === 'standard') {
+                if (!reportDate) {
+                    alert('请选择审计报告出具日期');
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append('auditOpinion', auditOpinion);
+                formData.append('reportDate', reportDate);
+                formData.append('reportNumber', reportNumber);
+
+                // 将审计意见、出具日期和文号传递给后端
+                fetch('/generate_audit_report', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('mainReportSuccessMessage').style.display = 'block';
+                    } else {
+                        alert('生成报告时出错，请重试');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                alert('当前仅支持标准无保留意见的生成，其他选项尚未实现。');
+            }
+        });
+
+        document.getElementById('generateAttachmentBtn').addEventListener('click', function() {
+            // 发送生成报告附件的指令到后端
+            fetch('/generate_report_attachment', {
+                method: 'POST'
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('attachmentSuccessMessage').style.display = 'block';
+                } else {
+                    alert('生成报告附件时出错，请重试');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+            });
+    </script>
+</body>
+</html>
