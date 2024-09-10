@@ -49,13 +49,7 @@
             padding: 20px;
             overflow-y: auto;
             margin-left: 0px;
-        }
-        .content iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            margin: 0;
-            padding: 0;
+            width: 75%;
         }
         .toggle-btn {
             position: fixed; /* 使用fixed来固定按钮 */
@@ -82,12 +76,12 @@
 <body>
     <div class="sidebar">
         <ul>
-            <li data-src="instruction.html">使用说明</li>
+            <li onclick="instructionFunction()">使用说明</li>
             <li>
                 倒计时
                 <ul>
-                    <li data-src="./countdown/dashboard.html">看板</li>
-                    <li data-src="./countdown/settings.html">设置</li>
+                    <li onclick="countdown_dashboardFunction()">倒计时看板</li>
+                    <li onclick="countdown_settingsFunction()">倒计时设置</li>
                 </ul>
             </li>
             <li>
@@ -136,47 +130,8 @@
             </li>
         </ul>
     </div>
-    <button class="toggle-btn">→<br>←</button>
-    <div class="content">
-        <iframe id="mainFrame" src="instruction.html"></iframe>
-    </div>
-    <script>
-        document.querySelectorAll('.sidebar > ul > li').forEach(item => {
-            item.addEventListener('click', function(e) {
-                // 检查是否有子菜单
-                const sublist = this.querySelector('ul');
-                if (sublist) {
-                    // 如果有子菜单，则展开/隐藏子菜单
-                    e.stopPropagation();
-                    sublist.classList.toggle('active');
-                    sublist.style.display = sublist.style.display === 'block' ? 'none' : 'block';
-                } else {
-                    // 如果没有子菜单，则加载相应的页面
-                    const src = this.getAttribute('data-src');
-                    if (src) {
-                        e.stopPropagation();
-                        document.getElementById('mainFrame').setAttribute('src', src);
-                    }
-                }
-            });
-        });
-
-        document.querySelectorAll('.sidebar ul ul li').forEach(item => {
-            item.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const src = this.getAttribute('data-src');
-                if (src) {
-                    document.getElementById('mainFrame').setAttribute('src', src);
-                }
-            });
-        });
-
-        const sidebar = document.querySelector('.sidebar');
-        const content = document.querySelector('.content');
-        const toggleBtn = document.querySelector('.toggle-btn');
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('hidden');
-        });
-    </script>
+    <button class="toggle-btn">→<br>←</button>    
+    <div class="content" id="content"></div>
+    <script type="module" src="index.js"></script>
 </body>
 </html>

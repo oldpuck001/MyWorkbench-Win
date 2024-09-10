@@ -26,8 +26,8 @@ function createWindow() {
     width: 1400,
     height: 820,
     webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false
+      nodeIntegration: true,        // 禁用直接使用 Node.js 模块
+      contextIsolation: false,      // 禁用上下文隔离，以便访问 window.myAPI
     }
   });
 
