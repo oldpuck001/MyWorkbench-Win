@@ -2,7 +2,7 @@
 
 
 import { dashboardFunction, settingsFunction } from './countdown/script.js';
-
+import { vocabulary_to_audio } from './study_language_tools/script.js';
 
 
 document.querySelectorAll('.sidebar > ul > li').forEach(item => {
@@ -54,4 +54,8 @@ window.countdown_dashboardFunction = function() {
 
 window.countdown_settingsFunction = function() {
     settingsFunction();
+}
+
+window.vocabulary_to_audioFunction = function() {
+    vocabulary_to_audio();
 }

@@ -1,10 +1,11 @@
 # backend.py
 import sys
 import json
-from countdown import countdown
+from study_language_tools import vocabulary_to_audio_py
 
 
 def main():
+
     # 從標準輸入讀取數據
     input_data = sys.stdin.read()
 
@@ -12,8 +13,10 @@ def main():
     request = json.loads(input_data)
 
     # 處理數據（這裡我們假設收到的是計算請求）
-    if request["command"] == "countdown_load":
-        result = countdown.load_json()
+    if request["command"] == "importButton":
+        result = vocabulary_to_audio_py.import_vocabulary(request)
+    elif request["command"] == "generateButton":
+        result = vocabulary_to_audio_py.generate_audio(request)
     else:
         result = "Unknown command"
 
