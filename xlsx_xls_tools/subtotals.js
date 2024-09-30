@@ -101,7 +101,7 @@ export async function subtotalsFunction() {
 
     document.getElementById('generateButton').addEventListener('click', async () => {
         if (!filePath) {
-            alert('請先導入文件');
+            alert('请先导入文件！');
             return;
         }
         // 動態設置過濾器和默認文件名，保存 MP3 文件

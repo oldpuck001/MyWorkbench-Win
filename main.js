@@ -41,6 +41,18 @@ ipcMain.handle('dialog:openFile', async (event, filters) => {
   }
 });
 
+// 处理文件夹选择请求
+ipcMain.handle('dialog:openDirectory', async () => {
+  const { canceled, filePaths } = await dialog.showOpenDialog({
+    properties: ['openDirectory']
+  });
+  
+  if (!canceled && filePaths.length > 0) {
+    return filePaths[0]; // 返回选择的文件夹路径
+  }
+  return null; // 用户取消选择，返回 null
+});
+
 ipcMain.handle('dialog:saveFile', async (event, filters, defaultFileName) => {
   // 打開保存文件對話框，讓用戶選擇保存文件的位置
   const { canceled, filePath } = await dialog.showSaveDialog({

@@ -1,24 +1,32 @@
 {
   "task_list": [
     {
-      "targetDate": "2024-09-12",
-      "targetTask": "去北京环球影城"
+      "targetDate": "2025-03-01",
+      "targetTask": "日语检定：本月发布报名公告"
     },
     {
-      "targetDate": "2024-09-17",
-      "targetTask": "海底捞家庭聚会"
+      "targetDate": "2025-04-28",
+      "targetTask": "税务师考试：2024年此日发布考试公告"
     },
     {
-      "targetDate": "2024-10-01",
-      "targetTask": "测试一"
+      "targetDate": "2025-05-08",
+      "targetTask": "税务师考试：2024年此日开始报名，截止日7月8日"
     },
     {
-      "targetDate": "2024-12-31",
-      "targetTask": "测试二"
+      "targetDate": "2025-07-07",
+      "targetTask": "日语检定：2024年此日考试"
     },
     {
-      "targetDate": "2025-01-01",
-      "targetTask": "测试三"
+      "targetDate": "2025-11-02",
+      "targetTask": "税务师考试：2024年此日和次日考试"
+    },
+    {
+      "targetDate": "2025-12-01",
+      "targetTask": "日语检定：2024年此日考试"
+    },
+    {
+      "targetDate": "2025-12-01",
+      "targetTask": "ACCA F1-F3 本月考试"
     }
   ],
   "days_off": [

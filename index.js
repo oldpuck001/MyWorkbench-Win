@@ -1,11 +1,21 @@
 // index.js
 
-import { dashboardFunction, settingsFunction } from './countdown/script.js';
+import { dashboardFunction, settingsFunction } from './countdown/countdown.js';
 
 import { spliceFunction } from './xlsx_xls_tools/splice.js';
 import { subtotalsFunction } from './xlsx_xls_tools/subtotals.js';
 
-import { vocabulary_to_audio } from './study_language_tools/script.js';
+//PDF
+
+import { china_mainland_annual_auditFunction } from './accounting_audit/china_mainland_annual_audit/china_mainland_annual_audit.js';
+
+import { modifythefilenameFunction } from './filename_tools/modifythefilename.js'
+import { characterFunction } from './filename_tools/character.js'
+import { imageFunction } from './filename_tools/image.js'
+import { sortFunction } from './filename_tools/sort.js'
+import { exportFunction } from './filename_tools/export.js'
+
+import { vocabulary_to_audioFunction } from './study_language_tools/vocabulary_to_audio.js';
 
 document.querySelectorAll('.sidebar > ul > li').forEach(item => {
     item.addEventListener('click', function(e) {
@@ -72,6 +82,42 @@ window.pdf_tools_splitFunction = function() {
     contentDiv.innerHTML = `<h1 style="text-align: center; width: 100%;">PDF文件分割功能开发中</h1>`;
 }
 
-window.vocabulary_to_audioFunction = function() {
-    vocabulary_to_audio();
+window.accounting_audit_china_mainland_annual_auditFunction = function() {
+    china_mainland_annual_auditFunction();
+}
+
+window.filename_tools_modifythefilenameFunction = function() {
+    modifythefilenameFunction();
+}
+
+window.filename_tools_characterFunction = function() {
+    characterFunction();
+}
+
+window.filename_tools_imageFunction = function() {
+    imageFunction();
+}
+
+window.filename_tools_sortFunction = function() {
+    sortFunction();
+}
+
+window.filename_tools_exportFunction = function() {
+    exportFunction();
+}
+
+window.study_language_tools_vocabulary_to_audioFunction = function() {
+    vocabulary_to_audioFunction();
+}
+
+window.video_editing_tools_text_to_audioFunction = function() {
+    const contentDiv = document.getElementById('content');
+    contentDiv.style.border = 'none';
+    contentDiv.innerHTML = `<h1 style="text-align: center; width: 100%;">文本转语音功能开发中</h1>`;
+}
+
+window.video_editing_tools_cc_toolFunction = function() {
+    const contentDiv = document.getElementById('content');
+    contentDiv.style.border = 'none';
+    contentDiv.innerHTML = `<h1 style="text-align: center; width: 100%;">CC字幕辅助功能开发中</h1>`;
 }

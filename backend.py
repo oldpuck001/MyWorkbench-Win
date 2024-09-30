@@ -3,6 +3,14 @@ import sys
 import json
 from xlsx_xls_tools import splice_py
 from xlsx_xls_tools import subtotals_py
+
+
+from filename_tools import modifythefilename_py
+from filename_tools import character_py
+from filename_tools import image_py
+from filename_tools import sort_py
+from filename_tools import export_py
+
 from study_language_tools import vocabulary_to_audio_py
 
 def main():
@@ -26,6 +34,16 @@ def main():
     elif request["command"] == "subtotals_generate":
         result = subtotals_py.subtotals_generate(request)
 
+    elif request["command"] == "filename_modify":
+        result = modifythefilename_py.modify(request)
+    elif request["command"] == "filename_character":
+        result = character_py.character(request)
+    elif request["command"] == "filename_image":
+        result = image_py.image(request)
+    elif request["command"] == "filename_sort":
+        result = sort_py.sort(request)
+    elif request["command"] == "filename_export":
+        result = export_py.export(request)
 
     elif request["command"] == "splice_sheet_input":
         result = splice_py.input_sheet(request)
