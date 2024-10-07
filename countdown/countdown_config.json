@@ -1,6 +1,18 @@
 {
   "task_list": [
     {
+      "targetDate": "2024-10-20",
+      "targetTask": "刘姐出发"
+    },
+    {
+      "targetDate": "2024-12-21",
+      "targetTask": "冬至"
+    },
+    {
+      "targetDate": "2025-01-01",
+      "targetTask": "2025年元旦"
+    },
+    {
       "targetDate": "2025-03-01",
       "targetTask": "日语检定：本月发布报名公告"
     },

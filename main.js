@@ -26,9 +26,9 @@ function createWindow() {
 // 當 Electron 完成初始化並準備創建瀏覽器窗口時調用
 app.whenReady().then(createWindow);
 
-// IPC 處理與 Python 後端的通信和文件選擇窗口
+// IPC 處理文件選擇窗口
 ipcMain.handle('dialog:openFile', async (event, filters) => {
-  // 打開文件選擇對話框，讓用戶選擇一個 XLSX 文件
+  // 打開文件選擇對話框
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openFile'],
     filters: filters
@@ -41,30 +41,31 @@ ipcMain.handle('dialog:openFile', async (event, filters) => {
   }
 });
 
-// 处理文件夹选择请求
+// IPC 處理文件夾選擇窗口
 ipcMain.handle('dialog:openDirectory', async () => {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openDirectory']
   });
-  
-  if (!canceled && filePaths.length > 0) {
-    return filePaths[0]; // 返回选择的文件夹路径
+  // 如果取消選擇，返回 null
+  if (canceled) {
+    return null;
   }
-  return null; // 用户取消选择，返回 null
+  return filePaths[0];
 });
 
+// IPC 處理文件保存窗口
 ipcMain.handle('dialog:saveFile', async (event, filters, defaultFileName) => {
   // 打開保存文件對話框，讓用戶選擇保存文件的位置
   const { canceled, filePath } = await dialog.showSaveDialog({
     title: 'Save File',
-    defaultPath: defaultFileName,  // 設置預設文件名
-    filters: filters               // 使用前端傳遞的文件類型過濾器
+    defaultPath: defaultFileName,       // 設置預設文件名
+    filters: filters                    // 使用前端傳遞的文件類型過濾器
   });
-  // 如果取消選擇文件，返回 null
+  // 如果取消保存文件，返回 null
   if (canceled) {
     return null;
   } else {
-    return filePath;  // 返回選擇的文件保存路徑
+    return filePath;
   }
 });
 
@@ -89,13 +90,13 @@ ipcMain.on('asynchronous-message', (event, arg) => {
     console.error(`stderr: ${data}`);
   });
 
-  // pythonProcess 是通過 spawn 創建的子進程對象，代表 Python 腳本的執行過程。
+  // pythonProcess 是通過 spawn 創建的子進程對象，用於為子進程對象添加事件監聽器，監聽特定的事件並在事件觸發時執行回調函數。
   pythonProcess.on('close', (code) => {
     console.log(`Python process exited with code ${code}`);
   });
 });
 
-// 當所有窗口都關閉時退出應用。
+// 在 macOS 上的應用通常在關閉所有窗口後，應用本身仍然會保持活躍，圖標會繼續留在 Dock 中，因此檢查當前運行平台，避免所有窗口關閉後立即退出。
 // darwin 是 Node.js 中用來標識 macOS 的操作系統平台名稱。名稱來自於 macOS 的核心內核 Darwin。
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -104,6 +105,8 @@ app.on('window-all-closed', () => {
 });
 
 // 在 macOS 上，所有窗口關閉後，可以點擊 Dock 中的應用圖標來重新打開應用。
+// activate 事件允許應用在這種情況下重新創建窗口（如果沒有窗口打開）。
+// 如果所有窗口都關閉了，則調用 createWindow() 函數來重新創建窗口。
 app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
