@@ -3,7 +3,7 @@ import sys
 import json
 from xlsx_xls_tools import splice_py
 from xlsx_xls_tools import subtotals_py
-
+from xlsx_xls_tools import single_sort_export_py
 
 from filename_tools import modifythefilename_py
 from filename_tools import character_py
@@ -33,6 +33,15 @@ def main():
         result = subtotals_py.subtotals_index(request)
     elif request["command"] == "subtotals_generate":
         result = subtotals_py.subtotals_generate(request)
+
+    elif request["command"] == "single_sort_export_import":
+        result = single_sort_export_py.single_sort_export_import(request)
+    elif request["command"] == "single_sort_export_index":
+        result = single_sort_export_py.single_sort_export_index(request)
+    elif request["command"] == "single_sort_export_export":
+        result = single_sort_export_py.single_sort_export_export(request)
+
+
 
     elif request["command"] == "filename_modify":
         result = modifythefilename_py.modify(request)

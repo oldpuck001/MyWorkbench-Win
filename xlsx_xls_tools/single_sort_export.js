@@ -1,11 +1,10 @@
-// subtotals.js
+// single_sort_export.js
 
 const { ipcRenderer } = require('electron');
 
-let filePath = '';  // 用來存儲文件路徑
-let savePath = '';  // 用來存儲文件路徑
+let filePath = '';
 
-export async function subtotalsFunction() {
+export async function single_sort_exportFunction() {
 
     // 獲取 DOM 元素
     const contentDiv = document.getElementById('content');
@@ -35,12 +34,12 @@ export async function subtotalsFunction() {
             }
         </style>
 
-        <h1 style="text-align: center; width: 100%;">分类汇总表格</h1>
+        <h1 style="text-align: center; width: 100%;">分类导出表格（单列金额）</h1>
         
         <div id="mainLayout" style="display: flex; flex-direction: column; align-items: center;">
             <div style="display: flex; align-items: center; margin-bottom: 10px;">
                 <label style="width: 60px; text-align: left;">源表格</label>
-                <input id="source_path" type="text" style="width: 740px;">
+                <input id="source_path" type="text" style="width: 708px;">
             </div>
             <br>
             <div style="display: flex; align-items: center; margin-bottom: 10px;">
@@ -48,15 +47,15 @@ export async function subtotalsFunction() {
                 <select id="sheetDropdown" name="sheetDropdown" style="width: 70px; margin-right: 20px;">
                 </select>
 
-                <label for="rowDropdown" style="margin-right: 5px;">选择行标题分类列</label>
-                <select id="rowDropdown" name="rowDropdown" style="width: 70px; margin-right: 20px;">
+                <label for="exportDropdown" style="margin-right: 5px;">选择导出分类列</label>
+                <select id="exportDropdown" name="exportDropdown" style="width: 70px; margin-right: 20px;">
                 </select>
 
-                <label for="columnDropdown" style="margin-right: 5px;">选择列项目分类列</label>
-                <select id="columnDropdown" name="columnDropdown" style="width: 70px; margin-right: 20px;">
+                <label for="statisticsDropdown" style="margin-right: 5px;">选择统计分类列</label>
+                <select id="statisticsDropdown" name="statisticsDropdown" style="width: 70px; margin-right: 20px;">
                 </select>
 
-                <label for="valueDropdown" style="margin-right: 5px;">选择合计数值列</label>
+                <label for="valueDropdown" style="margin-right: 5px;">选择统计数值列</label>
                 <select id="valueDropdown" name="valueDropdown" style="width: 70px;">
                 </select>
             </div>
@@ -64,7 +63,7 @@ export async function subtotalsFunction() {
 
         <div class="export" style="text-align: center;">
             <button id="importButton" style="width: 180px; background-color: #00c787; border: none; color: white; padding: 10px 15px; cursor: pointer; margin-right: 15px;">导入</button>
-            <button id="generateButton" style="width: 180px; background-color: #00c787; border: none; color: white; padding: 10px 15px; cursor: pointer; margin-left: 15px;">生成</button>
+            <button id="exportButton" style="width: 180px; background-color: #00c787; border: none; color: white; padding: 10px 15px; cursor: pointer; margin-left: 15px;">导出</button>
         </div>
     `;
 
@@ -82,7 +81,7 @@ export async function subtotalsFunction() {
             return;
         }
         // 將文件路徑發送到主進程
-        ipcRenderer.send('asynchronous-message', { command: 'subtotals_import', data: {'filePath': filePath }});
+        ipcRenderer.send('asynchronous-message', { command: 'single_sort_export_import', data: {'filePath': filePath }});
     });
 
     // 当用户选择工作表时，获取该工作表的列索引
@@ -90,7 +89,7 @@ export async function subtotalsFunction() {
         const selectedSheet = event.target.value;
 
         // 将选择的工作表名发送到主进程，并请求该工作表的列
-        ipcRenderer.send('asynchronous-message', { command: 'subtotals_index', data: {'filePath': filePath, 'sheetName': selectedSheet }});
+        ipcRenderer.send('asynchronous-message', { command: 'single_sort_export_index', data: {'filePath': filePath, 'sheetName': selectedSheet }});
     });
 
     // 自动触发工作表选择的更改事件
@@ -99,30 +98,25 @@ export async function subtotalsFunction() {
         element.dispatchEvent(event);
     };
 
-    document.getElementById('generateButton').addEventListener('click', async () => {
+    document.getElementById('exportButton').addEventListener('click', async () => {
         if (!filePath) {
             alert('请先导入文件！');
             return;
         }
-        // 動態設置過濾器和默認文件名
-        const saveFilters = [{ name: 'Excel Files', extensions: ['xlsx', 'xls'] }];
-        const defaultFileName = 'xlsx_output.xlsx';
-        savePath = await ipcRenderer.invoke('dialog:saveFile', saveFilters, defaultFileName);
 
         const data = {
-            sheet_value: document.getElementById('sheetDropdown').value,
-            row_value: document.getElementById('rowDropdown').value,
-            column_value: document.getElementById('columnDropdown').value,
-            total_value: document.getElementById('valueDropdown').value,
+            sheet_name: document.getElementById('sheetDropdown').value,
+            sort_column: document.getElementById('exportDropdown').value,
+            secondary_column: document.getElementById('statisticsDropdown').value,
+            value_column: document.getElementById('valueDropdown').value,
             filePath: filePath,
-            savePath: savePath
         };
-        ipcRenderer.send('asynchronous-message', { command: 'subtotals_generate', data: data });
+        ipcRenderer.send('asynchronous-message', { command: 'single_sort_export_export', data: data });
     });
 
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
-        if (result[0] === 'subtotals_import') {
+        if (result[0] === 'single_sort_export_import') {
             // 将文件路径显示在输入框中
             document.getElementById(`source_path`).value = filePath;
 
@@ -144,26 +138,26 @@ export async function subtotalsFunction() {
             alert('导入成功！');
         }
 
-        if (result[0] === 'subtotals_index') {
-            const rowDropdown = document.getElementById('rowDropdown');
-            const columnDropdown = document.getElementById('columnDropdown');
+        if (result[0] === 'single_sort_export_index') {
+            const exportDropdown = document.getElementById('exportDropdown');
+            const statisticsDropdown = document.getElementById('statisticsDropdown');
             const valueDropdown = document.getElementById('valueDropdown');
     
             // 清空旧的选项
-            rowDropdown.innerHTML = '';
-            columnDropdown.innerHTML = '';
+            exportDropdown.innerHTML = '';
+            statisticsDropdown.innerHTML = '';
             valueDropdown.innerHTML = '';
     
             result[1].forEach(column => {
                 const optionRow = document.createElement('option');
                 optionRow.value = column;
                 optionRow.text = column;
-                rowDropdown.appendChild(optionRow);
+                exportDropdown.appendChild(optionRow);
     
                 const optionColumn = document.createElement('option');
                 optionColumn.value = column;
                 optionColumn.text = column;
-                columnDropdown.appendChild(optionColumn);
+                statisticsDropdown.appendChild(optionColumn);
     
                 const optionValue = document.createElement('option');
                 optionValue.value = column;
@@ -172,8 +166,12 @@ export async function subtotalsFunction() {
             });
         }
 
-        if (result[0] === 'subtotals_generate') {
-            alert('生成成功！');
+        if (result[0] === 'single_sort_export_export') {
+            alert('导出成功！');
+        }
+
+        if (result[0] === 'single_sort_export_no') {
+            alert('导出失败！');
         }
     });
 }

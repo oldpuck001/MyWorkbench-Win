@@ -4,6 +4,7 @@ import { dashboardFunction, settingsFunction } from './countdown/countdown.js';
 
 import { spliceFunction } from './xlsx_xls_tools/splice.js';
 import { subtotalsFunction } from './xlsx_xls_tools/subtotals.js';
+import { single_sort_exportFunction } from './xlsx_xls_tools/single_sort_export.js';
 
 //PDF
 
@@ -74,6 +75,10 @@ window.excel_tools_spliceFunction = function() {
 
 window.excel_tools_subtotalsFunction = function() {
     subtotalsFunction();
+}
+
+window.excel_tools_single_sort_exportFunction = function() {
+    single_sort_exportFunction();
 }
 
 window.pdf_tools_splitFunction = function() {
