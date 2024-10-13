@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f4f4f4;
+            padding: 15px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            font-size: 14px;
+        }
+        .sidebar.hidden {
+            width: 0;
+            padding: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 8px;
+            background-color: #fff;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .sidebar ul li:hover {
+            background-color: #ddd;
+        }
+        .sidebar ul ul {
+            display: none;
+            padding-left: 20px;
+        }
+        .sidebar ul ul li {
+            margin-bottom: 5px;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            margin-left: 0px;
+            width: 75%;
+        }
+        .toggle-btn {
+            position: fixed; /* 使用fixed来固定按钮 */
+            top: 50%;
+            left: 270px;  /* 默认状态下按钮在侧边栏外 */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 5px;
+            cursor: pointer;
+            z-index: 9;
+            width: 20px;
+            height: 80px;
+            transform: translateY(-50%);
+            text-align: center;
+            line-height: 1.2;
+            box-shadow: 0 0 5px rgba(0,0,0,0.2);
+        }
+        .sidebar.hidden + .toggle-btn {
+            left: 0; /* 当侧边栏隐藏时，按钮紧靠左边 */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <ul>
+            <li>
+                倒计时
+                <ul>
+                    <li onclick="countdown_dashboardFunction()">倒计时看板</li>
+                    <li onclick="countdown_settingsFunction()">倒计时设置</li>
+                </ul>
+            </li>
+            <li>
+                电子表格工具
+                <ul>
+                    <li onclick="excel_tools_spliceFunction()">电子表格拼接</li>
+                    <li onclick="excel_tools_subtotalsFunction()">分类汇总表格</li>
+                    <li onclick="excel_tools_single_sort_exportFunction()">分类导出表格（单列金额）</li>
+                    <li onclick="excel_tools_bank_statement_sortFunction()">银行对账单分类</li>
+                </ul>
+            </li>
+            <li>
+                PDF文件工具
+                <ul>
+                    <li onclick="pdf_tools_splitFunction()">PDF文件分割</li>
+                </ul>
+            </li>
+            <li>
+                会计与审计
+                <ul>
+                    <li onclick="accounting_audit_china_mainland_annual_auditFunction()">中国大陆年度报告审计</li>
+                </ul>
+            </li>
+            <li>
+                文件名修改工具
+                <ul>
+                    <li onclick="filename_tools_modifythefilenameFunction()">自动修改文件名</li>
+                    <li onclick="filename_tools_characterFunction()">按前n个字符分类修改文件名</li>
+                    <li onclick="filename_tools_imageFunction()">图片文件名修改</li>
+                    <li onclick="filename_tools_sortFunction()">按文件名分类</li>
+                    <li onclick="filename_tools_exportFunction()">输出文件名汇总</li>
+                </ul>
+            </li>
+            <li>
+                语言学习辅助工具
+                <ul>
+                    <li onclick="study_language_tools_vocabulary_to_audioFunction()">单词表转音频</li>
+                </ul>
+            </li>
+            <li>
+                视频剪辑辅助工具
+                <ul>
+                    <li onclick="video_editing_tools_text_to_audioFunction()">文本转语音</li>
+                    <li onclick="video_editing_tools_cc_toolFunction()">CC字幕辅助</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <button class="toggle-btn">→<br>←</button>    
+    <div class="content" id="content"></div>
+    <script type="module" src="index.js"></script>
+</body>
+</html>
