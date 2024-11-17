@@ -1,11 +1,10 @@
 # bank_statement_sort_py.py
 
 import os
-#import numpy as np
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.utils.dataframe import dataframe_to_rows
-from openpyxl.styles import Alignment
+from openpyxl.styles import Border, Side
 
 def bank_statement_sort_import(request):
 
@@ -58,7 +57,9 @@ def bank_statement_sort_export(request):
     number_column = request.get("data", {}).get("number_column", "")
     value_column = request.get("data", {}).get("value_column", "")
     credit_priority = request.get("data", {}).get("credit_priority", "")
+    credit_priority_list = [name.strip() for name in credit_priority.split(',')]
     debit_priority = request.get("data", {}).get("debit_priority", "")
+    debit_priority_list = [name.strip() for name in debit_priority.split(',')]
 
     file_path = os.path.dirname(source_file_path)
     file_name = os.path.splitext(source_file_path)[0]
@@ -125,10 +126,14 @@ def bank_statement_sort_export(request):
                 credit_name_number_summary['credit_name_number_sort'].append(credit_name_number_sort)
                 credit_name_number_summary['credit_name_number_value'].append(credit_number_total)
 
-            credit_name_number_summary_df = pd.DataFrame(credit_name_number_summary)
-            credit_name_number_summary_dict[credit_name_sort_cleaned] = credit_name_number_summary_df
+            credit_name_number_summary_dict[credit_name_sort_cleaned] = pd.DataFrame(credit_name_number_summary).sort_values(by='credit_name_number_value', ascending=False)
 
-        credit_name_summary_df = pd.DataFrame(credit_name_summary)
+            credit_name_number_summary['credit_name_number_bank'].clear()
+            credit_name_number_summary['credit_name_number_sort'].clear()
+            credit_name_number_summary['credit_name_number_value'].clear()
+
+        credit_name_summary_df_not_sorted = pd.DataFrame(credit_name_summary)
+        credit_name_summary_df = credit_name_summary_df_not_sorted.sort_values(by='credit_name_value', ascending=False)
 
         # 第二层分组的转出部分
         debit_name_sorts = debit_df[name_column].unique()
@@ -153,10 +158,14 @@ def bank_statement_sort_export(request):
                 debit_name_number_summary['debit_name_number_sort'].append(debit_name_number_sort)
                 debit_name_number_summary['debit_name_number_value'].append(debit_number_total)
 
-            debit_name_number_summary_df = pd.DataFrame(debit_name_number_summary)
-            debit_name_number_summary_dict[debit_name_sort_cleaned] = debit_name_number_summary_df
+            debit_name_number_summary_dict[debit_name_sort_cleaned] = pd.DataFrame(debit_name_number_summary).sort_values(by='debit_name_number_value', ascending=False)
 
-        debit_name_summary_df = pd.DataFrame(debit_name_summary)
+            debit_name_number_summary['debit_name_number_bank'].clear()
+            debit_name_number_summary['debit_name_number_sort'].clear()
+            debit_name_number_summary['debit_name_number_value'].clear()
+
+        debit_name_summary_df_not_sorted = pd.DataFrame(debit_name_summary)
+        debit_name_summary_df = debit_name_summary_df_not_sorted.sort_values(by='debit_name_value', ascending=False)
 
         # 创建 Excel 工作簿
         wb = Workbook()
@@ -164,60 +173,94 @@ def bank_statement_sort_export(request):
         ws.title = "树状图"
 
         # 添加贷方数据到左边
-        step = 2
-        skip = 0
-        for r_idx, row in enumerate(dataframe_to_rows(credit_name_summary_df, index=False, header=False), 2):
+        credit_cycle_not_sorted = list(credit_name_summary_df['credit_name_sort'])
+        ordered = [item for item in credit_priority_list if item in credit_cycle_not_sorted]
+        remaining = [item for item in credit_cycle_not_sorted if item not in ordered]
+        credit_cycle = ordered + remaining
 
-            step_with_skip = step + skip
-            for c_idx, value in enumerate(row, 1):
-                ws.cell(row=step_with_skip, column=c_idx, value=value)
+        credit_step = 1
+        credit_skip = 0
 
-            credit_name_key = row[0]
-            
-            if isinstance(credit_name_key, str):
-                credit_name_key_cleaned = credit_name_key.strip()
-            else:
-                credit_name_key_cleaned = credit_name_key
+        for credit_name in credit_cycle:
+            credit_step += credit_skip
+            a_cell = ws.cell(row=credit_step, column=1, value=credit_name)
+            cell_format(a_cell)
+            credit_name_value = credit_name_summary_df.query('credit_name_sort == @credit_name')['credit_name_value'].values[0]
+            b_cell = ws.cell(row=credit_step, column=2, value=credit_name_value)
+            cell_format(b_cell)
 
-            credit_count = len(credit_name_number_summary_dict[credit_name_key_cleaned])
-            skip = credit_count
+            credit_skip = len(credit_name_number_summary_dict[credit_name]) + 1
 
-        for r_idx, row in enumerate(dataframe_to_rows(credit_name_number_summary_df, index=False, header=False), 2):
-            for c_idx, value in enumerate(row, 3):
-                if isinstance(value, list):
-                    value = ', '.join(str(v) for v in value) if value else '<空白>'
-                ws.cell(row=r_idx, column=c_idx, value=value)
+            secondary_credit_step = credit_step
+            for row in dataframe_to_rows(credit_name_number_summary_dict[credit_name], index=False, header=False):
+                if isinstance(row[0], list):
+                    value = ', '.join(str(v) for v in row[0]) if row[0] else '<空白>'
+                c_cell = ws.cell(row=secondary_credit_step, column=3, value=value)
+                cell_format(c_cell)
+                d_cell = ws.cell(row=secondary_credit_step, column=4, value=row[1])
+                cell_format(d_cell)
+                e_cell = ws.cell(row=secondary_credit_step, column=5, value=row[2])
+                cell_format(e_cell)
+                secondary_credit_step += 1
 
         # 中间部分
-        ws.cell(row=2, column=6, value=credit_summary_total)
-        ws.cell(row=2, column=7, value=debit_summary_total)
-        
+        f1_cell = ws.cell(row=1, column=6, value='汇入金额合计')
+        cell_format(f1_cell)
+        f2_cell = ws.cell(row=2, column=6, value=credit_summary_total)
+        cell_format(f2_cell)
+
+        g1_cell = ws.cell(row=1, column=7, value='汇出金额合计')
+        cell_format(g1_cell)
+        g2_cell = ws.cell(row=2, column=7, value=debit_summary_total)
+        cell_format(g2_cell)
+
         # 添加借方数据到右边
-        step = 2
-        skip = 0
-        for r_idx, row in enumerate(dataframe_to_rows(debit_name_summary_df, index=False, header=False), 2):
+        debit_cycle_not_sorted = list(debit_name_summary_df['debit_name_sort'])
+        ordered = [item for item in debit_priority_list if item in debit_cycle_not_sorted]
+        remaining = [item for item in debit_cycle_not_sorted if item not in ordered]
+        debit_cycle = ordered + remaining
 
-            step_with_skip = step + skip
-            for c_idx, value in enumerate(row, 8):
-                ws.cell(row=step_with_skip, column=c_idx, value=value)
+        debit_step = 1
+        debit_skip = 0
 
-            debit_name_key = row[0]
+        for debit_name in debit_cycle:
+            debit_step += debit_skip
+            h_cell = ws.cell(row=debit_step, column=8, value=debit_name)
+            cell_format(h_cell)
+            debit_name_value = debit_name_summary_df.query('debit_name_sort == @debit_name')['debit_name_value'].values[0]
+            i_cell = ws.cell(row=debit_step, column=9, value=debit_name_value)
+            cell_format(i_cell)
+
+            debit_skip = len(debit_name_number_summary_dict[debit_name]) + 1
             
-            if isinstance(debit_name_key, str):
-                debit_name_key_cleaned = debit_name_key.strip()
-            else:
-                debit_name_key_cleaned = debit_name_key
-
-            debit_count = len(debit_name_number_summary_dict[debit_name_key_cleaned])
-            skip = debit_count
-
-        for r_idx, row in enumerate(dataframe_to_rows(debit_name_number_summary_df, index=False, header=False), 2):
-            for c_idx, value in enumerate(row, 10):
-                if isinstance(value, list):
-                    value = ', '.join(str(v) for v in value) if value else '<空白>'
-                ws.cell(row=r_idx, column=c_idx, value=value)
+            secondary_debit_step = debit_step
+            for row in dataframe_to_rows(debit_name_number_summary_dict[debit_name], index=False, header=False):
+                if isinstance(row[0], list):
+                    value = ', '.join(str(v) for v in row[0]) if row[0] else '<空白>'
+                j_cell = ws.cell(row=secondary_debit_step, column=10, value=value)
+                cell_format(j_cell)
+                k_cell = ws.cell(row=secondary_debit_step, column=11, value=row[1])
+                cell_format(k_cell)
+                l_cell = ws.cell(row=secondary_debit_step, column=12, value=row[2])
+                cell_format(l_cell)
+                secondary_debit_step += 1
 
         # 保存 Excel 文件
         wb.save(target_file_path)
 
     return ['bank_statement_sort_export']
+
+def cell_format(format_cell):
+
+    # 设置千分位符和两位小数的数字格式
+    format_cell.number_format = '#,##0.00'
+
+    # 设置单元格边框（上下左右）
+    thin_boeder = Border(left=Side(style='thin'),
+                         right=Side(style='thin'),
+                         top=Side(style='thin'),
+                         bottom=Side(style='thin'))
+    
+    format_cell.border = thin_boeder
+
+    return

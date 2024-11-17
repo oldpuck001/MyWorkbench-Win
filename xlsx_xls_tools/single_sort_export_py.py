@@ -52,6 +52,8 @@ def single_sort_export_export(request):
         # 將字符格式的數字轉換為數值
         df.loc[0:, value_column] = pd.to_numeric(df.loc[0:, value_column], errors='coerce').fillna(0)
 
+        df.loc[:, sort_column] = df[sort_column].fillna('<空白>').str.strip().replace('', '<空白>')
+
         # 进行分类
         sorts = df[sort_column].unique()
         dfs = {sort: df.loc[df[sort_column] == sort] for sort in sorts}
@@ -69,7 +71,8 @@ def single_sort_export_export(request):
         # 输出单个分类项为xlsx文件和进行数据汇总
         for sort, group_df in dfs.items():
             # 输出单个分类项为xlsx文件
-            df_export_path = os.path.join(export_path, f'{sort}.xlsx')
+            sort_save = sort.replace('/', '_')
+            df_export_path = os.path.join(export_path, f'{sort_save}.xlsx')
             group_df.to_excel(df_export_path, index=False)
 
             # 进行数据汇总
