@@ -4,74 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>主页面</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
-        .sidebar {
-            width: 250px;
-            background-color: #f4f4f4;
-            padding: 15px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            overflow-y: auto;
-            font-size: 14px;
-        }
-        .sidebar.hidden {
-            width: 0;
-            padding: 0;
-        }
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
-        .sidebar ul li {
-            padding: 8px;
-            background-color: #fff;
-            margin-bottom: 8px;
-            cursor: pointer;
-        }
-        .sidebar ul li:hover {
-            background-color: #ddd;
-        }
-        .sidebar ul ul {
-            display: none;
-            padding-left: 20px;
-        }
-        .sidebar ul ul li {
-            margin-bottom: 5px;
-        }
-        .content {
-            flex-grow: 1;
-            padding: 20px;
-            overflow-y: auto;
-            margin-left: 0px;
-            width: 75%;
-        }
-        .toggle-btn {
-            position: fixed; /* 使用fixed来固定按钮 */
-            top: 50%;
-            left: 270px;  /* 默认状态下按钮在侧边栏外 */
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 5px;
-            cursor: pointer;
-            z-index: 9;
-            width: 20px;
-            height: 80px;
-            transform: translateY(-50%);
-            text-align: center;
-            line-height: 1.2;
-            box-shadow: 0 0 5px rgba(0,0,0,0.2);
-        }
-        .sidebar.hidden + .toggle-btn {
-            left: 0; /* 当侧边栏隐藏时，按钮紧靠左边 */
-        }
-    </style>
+    <link rel="stylesheet" href="./style_css.css">
 </head>
 <body>
     <div class="sidebar">
