@@ -4,8 +4,8 @@ import sys
 import json
 from xlsx_xls_tools import splice_py
 from xlsx_xls_tools import subtotals_py
-from xlsx_xls_tools import single_sort_export_py
-from xlsx_xls_tools import bank_statement_sort_py
+from data_analysis_tools import single_sort_export_py
+from data_analysis_tools import bank_statement_sort_py
 
 from filename_tools import modifythefilename_py
 from filename_tools import character_py

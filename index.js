@@ -4,10 +4,8 @@ import { dashboardFunction, settingsFunction } from './countdown/countdown.js';
 
 import { spliceFunction } from './xlsx_xls_tools/splice.js';
 import { subtotalsFunction } from './xlsx_xls_tools/subtotals.js';
-import { single_sort_exportFunction } from './xlsx_xls_tools/single_sort_export.js';
-import { bank_statement_sortFunction } from './xlsx_xls_tools/bank_statement_sort.js';
-
-//PDF
+import { single_sort_exportFunction } from './data_analysis_tools/single_sort_export.js';
+import { bank_statement_sortFunction } from './data_analysis_tools/bank_statement_sort.js';
 
 import { china_mainland_annual_auditFunction } from './accounting_audit/china_mainland_annual_audit/china_mainland_annual_audit.js';
 
@@ -47,6 +45,11 @@ document.querySelectorAll('.sidebar ul ul li').forEach(item => {
             document.getElementById('mainFrame').setAttribute('src', src);
         }
     });
+});
+
+// 页面加载后自动显示倒计时看板页
+window.addEventListener('DOMContentLoaded', () => {
+    countdown_dashboardFunction();
 });
 
 const sidebar = document.querySelector('.sidebar');

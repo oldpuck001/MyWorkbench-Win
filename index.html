@@ -4,25 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>主页面</title>
-    <link rel="stylesheet" href="./style_css.css">
+    <link rel="stylesheet" href="./index.css">
 </head>
 <body>
     <div class="sidebar">
         <ul>
-            <li>
-                倒计时
-                <ul>
-                    <li onclick="countdown_dashboardFunction()">倒计时看板</li>
-                    <li onclick="countdown_settingsFunction()">倒计时设置</li>
-                </ul>
+            <li onclick="countdown_dashboardFunction()">
+                倒计时看板页
             </li>
             <li>
                 电子表格工具
                 <ul>
                     <li onclick="excel_tools_spliceFunction()">电子表格拼接</li>
                     <li onclick="excel_tools_subtotalsFunction()">分类汇总表格</li>
-                    <li onclick="excel_tools_single_sort_exportFunction()">分类导出表格（单列金额）</li>
-                    <li onclick="excel_tools_bank_statement_sortFunction()">银行对账单分类</li>
                 </ul>
             </li>
             <li>
@@ -38,6 +32,13 @@
                     <li onclick="filename_tools_imageFunction()">图片文件名修改</li>
                     <li onclick="filename_tools_sortFunction()">按文件名分类</li>
                     <li onclick="filename_tools_exportFunction()">输出文件名汇总</li>
+                </ul>
+            </li>
+            <li>
+                数据分析辅助
+                <ul>
+                    <li onclick="excel_tools_single_sort_exportFunction()">分类导出表格（单列金额）</li>
+                    <li onclick="excel_tools_bank_statement_sortFunction()">银行对账单分类</li>
                 </ul>
             </li>
             <li>
