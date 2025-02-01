@@ -9,8 +9,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "devDependencies": {
-    "electron": "^32.0.2"
-  }
+    "electron": "^34.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/oldpuck001/MyWorkbench.git"
+  },
+  "bugs": {
+    "url": "https://github.com/oldpuck001/MyWorkbench/issues"
+  },
+  "homepage": "https://github.com/oldpuck001/MyWorkbench#readme",
+  "description": ""
 }

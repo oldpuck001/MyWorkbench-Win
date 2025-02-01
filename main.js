@@ -4,8 +4,10 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { spawn } = require('child_process');
 const path = require('path');
 
+let project_folder = '';
+
 // 禁用硬件加速，在編寫程序用的MacBook pro2018上，使用硬件加速會報錯，所以禁用
-app.disableHardwareAcceleration();
+// app.disableHardwareAcceleration();
 
 function createWindow() {
 
@@ -28,7 +30,6 @@ app.whenReady().then(createWindow);
 
 // IPC 處理文件選擇窗口
 ipcMain.handle('dialog:openFile', async (event, filters) => {
-  // 打開文件選擇對話框
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openFile'],
     filters: filters
@@ -42,15 +43,18 @@ ipcMain.handle('dialog:openFile', async (event, filters) => {
 });
 
 // IPC 處理文件夾選擇窗口
-ipcMain.handle('dialog:openDirectory', async () => {
-  const { canceled, filePaths } = await dialog.showOpenDialog({
-    properties: ['openDirectory']
-  });
-  // 如果取消選擇，返回 null
-  if (canceled) {
+ipcMain.handle('dialog:openDirectory', async (event) => {
+  const result = await dialog.showOpenDialog({ properties: ['openDirectory'] });
+  if (result.canceled || result.filePaths.length === 0) {
     return null;
   }
-  return filePaths[0];
+  project_folder = result.filePaths[0];     // 存储到主进程全局变量
+  return project_folder;
+});
+
+// 让渲染进程获取 project_folder
+ipcMain.handle('get-project-folder', () => {
+  return project_folder;
 });
 
 // IPC 處理文件保存窗口
@@ -73,7 +77,7 @@ ipcMain.handle('dialog:saveFile', async (event, filters, defaultFileName) => {
 ipcMain.on('asynchronous-message', (event, arg) => {
 
   // 通過 spawn 函數創建的 Python 子進程對象，允許你與該子進程進行交互，例如監聽它的輸出、錯誤信息，或向其發送輸入數據。
-  const pythonProcess = spawn('python3', [path.join(__dirname, 'backend.py')]);
+  const pythonProcess = spawn('python', [path.join(__dirname, 'backend.py')]);
 
   // 發送數據到 Python
   pythonProcess.stdin.write(JSON.stringify(arg));
