@@ -2,7 +2,7 @@
 
 import sys
 import json
-from filename_tools import modifythefilename_py
+from filename_tools import modifythefilename
 from filename_tools import character_py
 from filename_tools import image_py
 from filename_tools import sort_py
@@ -26,7 +26,7 @@ def main():
 
     # 處理數據（這裡我們假設收到的是計算請求）
     if request["command"] == "filename_modify":
-        result = modifythefilename_py.modify(request)
+        result = modifythefilename.modify(request)
     elif request["command"] == "filename_character":
         result = character_py.character(request)
     elif request["command"] == "filename_image":

@@ -1,4 +1,4 @@
-# modifythefilename_py.py
+# modifythefilename.py
 
 import os
 import re
@@ -97,7 +97,7 @@ def modify(request):
             try:
                 int(source_character)
             except:
-                result_text = '参数输入有误，请重新输入！'
+                source_character = -1
 
             if int(source_character) >= 1:
                 for filename in os.listdir(folderPath):
@@ -151,27 +151,30 @@ def modify(request):
 
     elif select_function == 'regex':
 
-        if target_character == '':
-            for filename in os.listdir(folderPath):
-                mainfilename = os.path.splitext(filename)[0]
-                regexcompile = re.compile(source_character)
-                if re.search(regexcompile,mainfilename):
-                    result_text = result_text + filename + '\n'
-            if result_text == '':
-                result_text = '未找到！'
+        try:
+            if target_character == '':
+                for filename in os.listdir(folderPath):
+                    mainfilename = os.path.splitext(filename)[0]
+                    regexcompile = re.compile(source_character)
+                    if re.search(regexcompile,mainfilename):
+                        result_text = result_text + filename + '\n'
+                if result_text == '':
+                    result_text = '未找到！'
 
-        else:
-            for filename in os.listdir(folderPath):
-                mainfilename = os.path.splitext(filename)[0]
-                extfilename = os.path.splitext(filename)[1]
-                regexcompile = re.compile(source_character)
-                if re.search(regexcompile, mainfilename):
-                    newfilename = re.sub(regexcompile, target_character, mainfilename) + extfilename
-                    oldfilePath = os.path.join(folderPath, filename)
-                    newfilePath = os.path.join(folderPath, newfilename)
-                    os.rename(oldfilePath, newfilePath)
-                    result_text = result_text + filename + ' to ' + newfilename + '\n'
-            if result_text == '':
-                result_text = '未找到可修改文件或文件夹！'
+            else:
+                for filename in os.listdir(folderPath):
+                    mainfilename = os.path.splitext(filename)[0]
+                    extfilename = os.path.splitext(filename)[1]
+                    regexcompile = re.compile(source_character)
+                    if re.search(regexcompile, mainfilename):
+                        newfilename = re.sub(regexcompile, target_character, mainfilename) + extfilename
+                        oldfilePath = os.path.join(folderPath, filename)
+                        newfilePath = os.path.join(folderPath, newfilename)
+                        os.rename(oldfilePath, newfilePath)
+                        result_text = result_text + filename + ' to ' + newfilename + '\n'
+                if result_text == '':
+                    result_text = '未找到可修改文件或文件夹！'
+        except:
+            result_text = '参数输入有误，请重新输入！'
 
     return ['filename_modify', result_text]
