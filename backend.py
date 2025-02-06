@@ -3,7 +3,7 @@
 import sys
 import json
 from filename_tools import modifythefilename
-from filename_tools import character_py
+from filename_tools import character
 from filename_tools import image_py
 from filename_tools import sort_py
 from filename_tools import export_py
@@ -28,7 +28,7 @@ def main():
     if request["command"] == "filename_modify":
         result = modifythefilename.modify(request)
     elif request["command"] == "filename_character":
-        result = character_py.character(request)
+        result = character.character(request)
     elif request["command"] == "filename_image":
         result = image_py.image(request)
     elif request["command"] == "filename_sort":
