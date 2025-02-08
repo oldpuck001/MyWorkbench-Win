@@ -4,9 +4,10 @@ import sys
 import json
 from filename_tools import modifythefilename
 from filename_tools import character
-from filename_tools import image_py
-from filename_tools import sort_py
+from filename_tools import image
 from filename_tools import export_py
+from filename_tools import sort
+
 from xlsx_xls_tools import splice_py
 from xlsx_xls_tools import subtotals_py
 from data_analysis_tools import single_sort_export_py
@@ -30,11 +31,13 @@ def main():
     elif request["command"] == "filename_character":
         result = character.character(request)
     elif request["command"] == "filename_image":
-        result = image_py.image(request)
-    elif request["command"] == "filename_sort":
-        result = sort_py.sort(request)
+        result = image.image(request)
     elif request["command"] == "filename_export":
         result = export_py.export(request)
+    elif request["command"] == "filename_sort":
+        result = sort.sort(request)
+
+
 
     elif request["command"] == "splice_sheet_input":
         result = splice_py.input_sheet(request)

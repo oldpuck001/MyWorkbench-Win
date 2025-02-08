@@ -9,51 +9,51 @@ export async function imageFunction() {
 
     // 獲取 DOM 元素
     const contentDiv = document.getElementById('content');
-    contentDiv.style.border = 'none';
-    contentDiv.style.fontFamily = 'Arial, sans-serif';
-    contentDiv.style.margin = '20px';
 
-    // 使用 configData 中的數據設置內容
     contentDiv.innerHTML = `
 
-        <h4 style="text-align: center; width: 100%;">自动修改文件名</h1>
+        <h1>自动修改文件名</h1>
 
-        <div style="display: flex; flex-direction: column; align-items: center;">
-            <div style="display: flex; flex-direction: row; margin-bottom: 10px; align-items: center; width: 860px; height: 540px; border: 1px solid #ccc; justify-content: center; align-items: center; margin-bottom: 20px;">
+        <div class="import">
+            <div>
                 <canvas id="imageCanvas" width="860" height="540"></canvas>
             </div>
 
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <label style="width: 80px; text-align: left; margin-right: 15px;">文件夹路径</label>
-                <input id="file_path" type="text" style="width: 460px; margin-right: 15px;">
-                <button id="selectButton" style="width: 100px; background-color: #00c787; border: none; color: white; padding: 5px 10px; cursor: pointer;">选择文件夹</button>
+            <div>
+                <label style="width: 10%;">文件夹路径</label>
+                <input id="file_path" type="text">
+                <button id="selectButton">选择文件夹</button>
             </div>
 
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <button id="previousButton" style="width: 105px; background-color: #00c787; border: none; color: white; padding: 5px 10px; cursor: pointer; margin-right: 10px;">⇤</button>
-                <button id="leftButton" style="width: 105px; background-color: #00c787; border: none; color: white; padding: 5px 10px; cursor: pointer; margin-right: 10px;">⟲</button>
-                <button id="zoominButton" style="width: 105px; background-color: #00c787; border: none; color: white; padding: 5px 10px; cursor: pointer; margin-right: 5px;">+</button>
-                <button id="zoomoutButton" style="width: 105px; background-color: #00c787; border: none; color: white; padding: 5px 10px; cursor: pointer; margin-left: 5px;">−</button>
-                <button id="rightButton" style="width: 105px; background-color: #00c787; border: none; color: white; padding: 5px 10px; cursor: pointer; margin-left: 10px;">⟳</button>
-                <button id="nextButton" style="width: 105px; background-color: #00c787; border: none; color: white; padding: 5px 10px; cursor: pointer; margin-left: 10px;">⇥</button>
+            <div>
+                <button id="previousButton">⇤</button>
+                <button id="leftButton">⟲</button>
+                <button id="zoominButton">+</button>
+                <button id="zoomoutButton">−</button>
+                <button id="rightButton">⟳</button>
+                <button id="nextButton">⇥</button>
             </div>
 
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <input id="name_1" type="text" style="width: 90px;">
-                <label style="width: 19px; text-align: center;">-</label>
-                <input id="name_2" type="text" style="width: 90px;">
-                <label style="width: 19px; text-align: center;">-</label>
-                <input id="name_3" type="text" style="width: 90px;">
-                <label style="width: 19px; text-align: center;">-</label>
-                <input id="name_4" type="text" style="width: 90px;">
-                <label style="width: 19px; text-align: center;">-</label>
-                <input id="name_5" type="text" style="width: 90px; margin-right: 10px;">
-                <button id="renameButton" style="width: 105px; background-color: #00c787; border: none; color: white; padding: 5px 10px; cursor: pointer;">修改文件名</button>
+            <div>
+                <input id="name_1" type="text">
+                <label style="width: 5px; margin-right: 5px; margin-left: 5px;">-</label>
+                <input id="name_2" type="text">
+                <label style="width: 5px; margin-right: 5px; margin-left: 5px;">-</label>
+                <input id="name_3" type="text">
+                <label style="width: 5px; margin-right: 5px; margin-left: 5px;">-</label>
+                <input id="name_4" type="text">
+                <label style="width: 5px; margin-right: 5px; margin-left: 5px;">-</label>
+                <input id="name_5" type="text">
+                <button id="renameButton">修改文件名</button>
             </div>
+        </div>
 
-            <div style="display: flex; flex-direction: column; align-items: center;">
-                <label style="width: 675px; text-align: left;">查找/修改结果：</label>
-                <textarea id="result_output" rows="12" style="width: 675px;"></textarea>
+        <div class="export">
+            <div>
+                <label>查找/修改结果：</label>
+            </div>
+            <div>
+                <textarea id="result_output" rows="10"></textarea>
             </div>
         </div>
         `;
@@ -68,7 +68,7 @@ export async function imageFunction() {
     
         document.getElementById('selectButton').addEventListener('click', async () => {
             // 向主進程發送請求，打開文件選擇對話框
-            const fileFilters = [{ name: 'Image Files', extensions: ['.png', '.jpg', '.jpeg'] }];
+            const fileFilters = [{ name: 'Image Files', extensions: ['png', 'jpg', 'jpeg'] }];
             const filePath = await ipcRenderer.invoke('dialog:openFile', fileFilters);
     
             if (!filePath) {

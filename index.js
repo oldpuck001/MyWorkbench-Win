@@ -46,13 +46,20 @@ window.filename_tools_imageFunction = function() {
     imageFunction();
 }
 
+window.filename_tools_exportFunction = function() {
+    exportFunction();
+}
+
 window.filename_tools_sortFunction = function() {
     sortFunction();
 }
 
-window.filename_tools_exportFunction = function() {
-    exportFunction();
-}
+
+
+
+
+
+
 
 window.excel_tools_spliceFunction = function() {
     spliceFunction();
