@@ -1,11 +1,12 @@
 // index.js
 
-import { modifythefilenameFunction } from './filename_tools/modifythefilename.js'
-import { characterFunction } from './filename_tools/character.js'
-import { imageFunction } from './filename_tools/image.js'
-import { sortFunction } from './filename_tools/sort.js'
-import { exportFunction } from './filename_tools/export.js'
-
+import { modifythefilenameFunction } from './file_tools/modifythefilename.js'
+import { characterFunction } from './file_tools/character.js'
+import { imageFunction } from './file_tools/image.js'
+import { sortFunction } from './file_tools/sort.js'
+import { exportFunction } from './file_tools/export.js'
+import { collect_fileFunction } from './file_tools/collect_file.js'
+import { copy_folderFunction } from './file_tools/copy_folder.js'
 import { spliceFunction } from './xlsx_xls_tools/splice.js';
 import { subtotalsFunction } from './xlsx_xls_tools/subtotals.js';
 
@@ -34,32 +35,33 @@ window.addEventListener('DOMContentLoaded', () => {
     modifythefilenameFunction();
 });
 
-window.filename_tools_modifythefilenameFunction = function() {
+window.file_tools_modifythefilenameFunction = function() {
     modifythefilenameFunction();
 }
 
-window.filename_tools_characterFunction = function() {
+window.file_tools_characterFunction = function() {
     characterFunction();
 }
 
-window.filename_tools_imageFunction = function() {
+window.file_tools_imageFunction = function() {
     imageFunction();
 }
 
-window.filename_tools_exportFunction = function() {
+window.file_tools_exportFunction = function() {
     exportFunction();
 }
 
-window.filename_tools_sortFunction = function() {
+window.file_tools_sortFunction = function() {
     sortFunction();
 }
 
+window.file_tools_collect_fileFunction = function() {
+    collect_fileFunction();
+}
 
-
-
-
-
-
+window.file_tools_copy_folderFunction = function() {
+    copy_folderFunction();
+}
 
 window.excel_tools_spliceFunction = function() {
     spliceFunction();

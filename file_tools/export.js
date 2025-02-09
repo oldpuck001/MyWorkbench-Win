@@ -2,32 +2,45 @@
 
 const { ipcRenderer } = require('electron');
 
-let folderPath = '';  // 用來存儲文件路徑
-let savePath = '';  // 用來存儲文件路徑
+let folderPath = '';                // 用來存儲文件路徑
+let savePath = '';                  // 用來存儲文件路徑
 
 export async function exportFunction() {
 
     // 獲取 DOM 元素
     const contentDiv = document.getElementById('content');
-    contentDiv.style.border = 'none';
-    contentDiv.style.fontFamily = 'Arial, sans-serif';
-    contentDiv.style.margin = '20px';
 
-    // 使用 configData 中的數據設置內容
     contentDiv.innerHTML = `
 
-        <h1 style="text-align: center; width: 100%;">输出文件名汇总</h1>
+        <h1>输出文件名汇总</h1>
 
-        <div id="mainLayout" style="display: flex; flex-direction: column; align-items: center;">
-            <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                <label style="width: 90px; text-align: left;">文件夹路径</label>
-                <input id="folder_path" type="text" style="width: 500px;">
+        <div class="import">
+            <div>
+                <label style="width: 25%;">文件夹路径</label>
+                <input id="folder_path" type="text">
+            </div>
+
+            <div>
+                <label style="width: 25%;">请选择是否检索子文件夹</label>
+                <input type="radio" id="yes" name="action" value="yes" checked>
+                <label for="yes">是</label>
+                <input type="radio" id="no" name="action" value="copy">
+                <label for="no">否</label>
+            </div>
+
+            <div>
+                <button id="selectButton">选择文件夹</button>
+                <button id="outputButton">汇总与输出</button>
             </div>
         </div>
-        <br>
-        <div class="export" style="text-align: center;">
-            <button id="selectButton" style="width: 180px; background-color: #00c787; border: none; color: white; padding: 10px 15px; cursor: pointer; margin-right: 10px;">选择文件夹</button>
-            <button id="outputButton" style="width: 180px; background-color: #00c787; border: none; color: white; padding: 10px 15px; cursor: pointer; margin-left: 10px;">汇总与输出</button>
+
+        <div class="export">
+            <div>
+                <label>查找/修改结果：</label>
+            </div>
+            <div>
+                <textarea id="result_output" rows="20"></textarea>
+            </div>
         </div>
     `;
 
@@ -61,16 +74,29 @@ export async function exportFunction() {
             return;
         }
 
+        // 获取所有 name 为 "action" 的单选按钮
+        const radios = document.getElementsByName('action');
+        let selectedValue = '';
+        
+        // 遍历所有单选按钮，找到被选中的那个
+        for (const radio of radios) {
+            if (radio.checked) {
+                selectedValue = radio.value;
+                break;
+            }
+        }
+
         const data = {
             folderPath: folderPath,
-            savePath: savePath
+            savePath: savePath,
+            yes_or_no: selectedValue
         };
         ipcRenderer.send('asynchronous-message', { command: 'filename_export', data: data });
     });
 
     ipcRenderer.on('asynchronous-reply', (event, result) => {
         if (result[0] === 'filename_export') {
-            alert('导出成功！');
+            document.getElementById(`result_output`).value += '导出成功！\n';
         }
     });
 }

@@ -2,12 +2,13 @@
 
 import sys
 import json
-from filename_tools import modifythefilename
-from filename_tools import character
-from filename_tools import image
-from filename_tools import export_py
-from filename_tools import sort
-
+from file_tools import modifythefilename
+from file_tools import character
+from file_tools import image
+from file_tools import export
+from file_tools import sort
+from file_tools import collect_file
+from file_tools import copy_folder
 from xlsx_xls_tools import splice_py
 from xlsx_xls_tools import subtotals_py
 from data_analysis_tools import single_sort_export_py
@@ -33,12 +34,13 @@ def main():
     elif request["command"] == "filename_image":
         result = image.image(request)
     elif request["command"] == "filename_export":
-        result = export_py.export(request)
+        result = export.export(request)
     elif request["command"] == "filename_sort":
         result = sort.sort(request)
-
-
-
+    elif request["command"] == "collect_file":
+        result = collect_file.collect_file(request)
+    elif request["command"] == "copy_folder":
+        result = copy_folder.copy_folder(request)
     elif request["command"] == "splice_sheet_input":
         result = splice_py.input_sheet(request)
     elif request["command"] == "splice_sheet_output":
