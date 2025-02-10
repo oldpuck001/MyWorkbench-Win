@@ -99,7 +99,7 @@ export async function imageFunction() {
     let friction = 0.9;  // 慣性滾動摩擦係數
 
     // 加載初始圖片
-    img.src = 'filename_tools/image.jpeg';
+    img.src = 'file_tools/image.jpeg';
     img.onload = () => {
         setInitialScaleAndDrawImage();
     };

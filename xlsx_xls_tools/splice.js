@@ -6,45 +6,23 @@ export async function spliceFunction() {
 
     // 獲取 DOM 元素
     const contentDiv = document.getElementById('content');
-    contentDiv.style.border = 'none';
-    contentDiv.style.fontFamily = 'Arial, sans-serif';
-    contentDiv.style.margin = '20px';
 
     // 使用 configData 中的數據設置內容
     contentDiv.innerHTML = `
 
-        <style>
-            .row {
-                display: flex;
-                margin-bottom: 10px;
-            }
-            .row input, .row select {
-                margin-right: 10px;
-            }
-            .row button {
-                margin-left: 10px;
-            }
-            .readonly {
-                cursor: not-allowed;
-            }
-            .export {
-                margin-top: 20px;
-            }
-        </style>
-
-        <h1 style="text-align: center; width: 100%;">电子表格拼接</h1>
+        <h1>电子表格拼接</h1>
         
-        <div id="mainLayout" style="display: flex; flex-direction: column; align-items: center;">
+        <div id="rowsContainer" class="import">
             <!-- Rows will be added dynamically via JavaScript -->
         </div>
-        
-        <div class="export" style="text-align: center;">
-            <button id="exportButton" style="width: 150px; background-color: #00c787; border: none; color: white; padding: 10px 15px; cursor: pointer;">导出</button>
+
+        <div class="import">
+            <button id="exportButton">导出</button>
         </div>
     `;
 
     // 创建12行
-    const mainLayout = document.getElementById('mainLayout');
+    const rowsContainer = document.getElementById('rowsContainer');
     const numRows = 12;
 
     for (let i = 0; i < numRows; i++) {
@@ -57,19 +35,21 @@ export async function spliceFunction() {
 
         const label = document.createElement('label');
         label.textContent = `表格${index + 1}`;
-        label.style.width = '60px';  // 设置宽度以保持布局一致
-        label.style.textAlign = 'left';  // 右对齐文本
+        label.style.width = '7%';                   // 设置宽度以保持布局一致
+        label.style.textAlign = 'left';             // 右对齐文本
 
         const input = document.createElement('input');
         input.type = 'text';
-        input.style.width = '350px';
+        input.style.width = '35%';
+        input.style.marginRight = '10px';
         input.classList.add('readonly');
         input.readOnly = true;
         input.id = `sheetInput-${index}`;
 
         const select = document.createElement('select');
-        select.style.width = '120px';
-        select.id = `sheetDropdown-${index}`;  // 为每个 select 分配唯一的 ID
+        select.style.width = '13%';
+        select.style.marginRight = '10px';
+        select.id = `sheetDropdown-${index}`;        // 为每个 select 分配唯一的 ID
 
         const addButton = document.createElement('button');
         addButton.textContent = '添加';
@@ -84,7 +64,7 @@ export async function spliceFunction() {
         rowDiv.appendChild(select);
         rowDiv.appendChild(addButton);
         rowDiv.appendChild(delButton);
-        mainLayout.appendChild(rowDiv);
+        rowsContainer.appendChild(rowDiv);
     }
 
     async function addSheet(index) {

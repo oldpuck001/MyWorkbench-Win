@@ -9,7 +9,7 @@ from file_tools import export
 from file_tools import sort
 from file_tools import collect_file
 from file_tools import copy_folder
-from xlsx_xls_tools import splice_py
+from xlsx_xls_tools import splice
 from xlsx_xls_tools import subtotals_py
 from data_analysis_tools import single_sort_export_py
 from data_analysis_tools import bank_statement_sort_py
@@ -42,9 +42,9 @@ def main():
     elif request["command"] == "copy_folder":
         result = copy_folder.copy_folder(request)
     elif request["command"] == "splice_sheet_input":
-        result = splice_py.input_sheet(request)
+        result = splice.input_sheet(request)
     elif request["command"] == "splice_sheet_output":
-        result = splice_py.output_sheet(request)
+        result = splice.output_sheet(request)
 
     elif request["command"] == "subtotals_import":
         result = subtotals_py.subtotals_import(request)
