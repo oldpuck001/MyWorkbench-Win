@@ -9,7 +9,8 @@ import { collect_fileFunction } from './file_tools/collect_file.js'
 import { copy_folderFunction } from './file_tools/copy_folder.js'
 import { spliceFunction } from './xlsx_xls_tools/splice.js';
 import { subtotalsFunction } from './xlsx_xls_tools/subtotals.js';
-
+import { fillFunction } from './xlsx_xls_tools/fill.js';
+import { regexFunction } from './xlsx_xls_tools/regex.js'
 import { single_sort_exportFunction } from './data_analysis_tools/single_sort_export.js';
 import { bank_statement_sortFunction } from './data_analysis_tools/bank_statement_sort.js';
 
@@ -71,10 +72,18 @@ window.excel_tools_subtotalsFunction = function() {
     subtotalsFunction();
 }
 
-window.excel_tools_single_sort_exportFunction = function() {
+window.excel_tools_fillFunction = function() {
+    fillFunction();
+}
+
+window.excel_tools_regexFunction = function() {
+    regexFunction();
+}
+
+window.data_analysis_tools_single_sort_exportFunction = function() {
     single_sort_exportFunction();
 }
 
-window.excel_tools_bank_statement_sortFunction = function() {
+window.data_analysis_tools_bank_statement_sortFunction = function() {
     bank_statement_sortFunction();
 }

@@ -1,11 +1,11 @@
-// subtotals.js
+// fill.js
 
 const { ipcRenderer } = require('electron');
 
 let filePath = '';              // 用來存儲文件路徑
 let savePath = '';              // 用來存儲文件路徑
 
-export async function subtotalsFunction() {
+export async function fillFunction() {
 
     // 獲取 DOM 元素
     const contentDiv = document.getElementById('content');
@@ -13,7 +13,7 @@ export async function subtotalsFunction() {
     // 使用 configData 中的數據設置內容
     contentDiv.innerHTML = `
 
-        <h1>分类汇总表格</h1>
+        <h1>自动填充空行</h1>
         
         <div class="import">
             <div>
@@ -23,26 +23,21 @@ export async function subtotalsFunction() {
 
             <div>
                 <label for="sheetDropdown">选择工作表</label>
-                <select id="sheetDropdown" name="sheetDropdown" style="width: 40%;">
-                </select>
+                <select id="sheetDropdown" name="sheetDropdown" style="width: 30%;"></select>
             </div>
 
             <div>
-                <label for="rowDropdown">选择行标题分类列</label>
-                <select id="rowDropdown" name="rowDropdown" style="width: 40%;">
-                </select>
+                <label for="columnDropdown">选择要填充的列</label>
+                <select id="columnDropdown" name="columnDropdown" style="width: 30%;"></select>
             </div>
 
             <div>
-                <label for="columnDropdown">选择列项目分类列</label>
-                <select id="columnDropdown" name="columnDropdown" style="width: 40%;">
-                </select>
-            </div>
+                <label>选择填充方式</label>
+                <input type="radio" id="repeatOption" name="action" value="repeat" checked>
+                <label for="repeatOption">重复上一行</label>
 
-            <div>
-                <label for="valueDropdown">选择合计数值列</label>
-                <select id="valueDropdown" name="valueDropdown" style="width: 40%;">
-                </select>
+                <input type="radio" id="zeroOption" name="action" value="zero">
+                <label for="zeroOption">填充：0</label>
             </div>
 
             <div>
@@ -66,7 +61,7 @@ export async function subtotalsFunction() {
             return;
         }
         // 將文件路徑發送到主進程
-        ipcRenderer.send('asynchronous-message', { command: 'subtotals_import', data: {'filePath': filePath }});
+        ipcRenderer.send('asynchronous-message', { command: 'fill_import', data: {'filePath': filePath }});
     });
 
     // 当用户选择工作表时，获取该工作表的列索引
@@ -74,7 +69,7 @@ export async function subtotalsFunction() {
         const selectedSheet = event.target.value;
 
         // 将选择的工作表名发送到主进程，并请求该工作表的列
-        ipcRenderer.send('asynchronous-message', { command: 'subtotals_index', data: {'filePath': filePath, 'sheetName': selectedSheet }});
+        ipcRenderer.send('asynchronous-message', { command: 'fill_index', data: {'filePath': filePath, 'sheetName': selectedSheet }});
     });
 
     // 自动触发工作表选择的更改事件
@@ -93,20 +88,31 @@ export async function subtotalsFunction() {
         const defaultFileName = 'xlsx_output.xlsx';
         savePath = await ipcRenderer.invoke('dialog:saveFile', saveFilters, defaultFileName);
 
+        // 获取所有 name 为 "action" 的单选按钮
+        const radios = document.getElementsByName('action');
+        let selectedValue = '';
+        
+        // 遍历所有单选按钮，找到被选中的那个
+        for (const radio of radios) {
+            if (radio.checked) {
+                selectedValue = radio.value;
+                break;
+            }
+        }
+
         const data = {
             sheet_value: document.getElementById('sheetDropdown').value,
-            row_value: document.getElementById('rowDropdown').value,
             column_value: document.getElementById('columnDropdown').value,
-            total_value: document.getElementById('valueDropdown').value,
+            select_value: selectedValue,
             filePath: filePath,
             savePath: savePath
         };
-        ipcRenderer.send('asynchronous-message', { command: 'subtotals_generate', data: data });
+        ipcRenderer.send('asynchronous-message', { command: 'fill_generate', data: data });
     });
 
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
-        if (result[0] === 'subtotals_import') {
+        if (result[0] === 'fill_import') {
             // 将文件路径显示在输入框中
             document.getElementById(`source_path`).value = filePath;
 
@@ -128,35 +134,21 @@ export async function subtotalsFunction() {
             alert('导入成功！');
         }
 
-        if (result[0] === 'subtotals_index') {
-            const rowDropdown = document.getElementById('rowDropdown');
+        if (result[0] === 'fill_index') {
             const columnDropdown = document.getElementById('columnDropdown');
-            const valueDropdown = document.getElementById('valueDropdown');
     
             // 清空旧的选项
-            rowDropdown.innerHTML = '';
             columnDropdown.innerHTML = '';
-            valueDropdown.innerHTML = '';
     
-            result[1].forEach(column => {
-                const optionRow = document.createElement('option');
-                optionRow.value = column;
-                optionRow.text = column;
-                rowDropdown.appendChild(optionRow);
-    
+            result[1].forEach(column => {    
                 const optionColumn = document.createElement('option');
                 optionColumn.value = column;
                 optionColumn.text = column;
                 columnDropdown.appendChild(optionColumn);
-    
-                const optionValue = document.createElement('option');
-                optionValue.value = column;
-                optionValue.text = column;
-                valueDropdown.appendChild(optionValue);
             });
         }
 
-        if (result[0] === 'subtotals_generate') {
+        if (result[0] === 'fill_generate') {
             alert('生成成功！');
         }
     });

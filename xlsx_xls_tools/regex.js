@@ -1,11 +1,11 @@
-// subtotals.js
+// regex.js
 
 const { ipcRenderer } = require('electron');
 
 let filePath = '';              // 用來存儲文件路徑
 let savePath = '';              // 用來存儲文件路徑
 
-export async function subtotalsFunction() {
+export async function regexFunction() {
 
     // 獲取 DOM 元素
     const contentDiv = document.getElementById('content');
@@ -13,36 +13,27 @@ export async function subtotalsFunction() {
     // 使用 configData 中的數據設置內容
     contentDiv.innerHTML = `
 
-        <h1>分类汇总表格</h1>
+        <h1>使用正则表达式筛选</h1>
         
         <div class="import">
             <div>
-                <label>源表格</label>
+                <label style="width: 25%;">源表格</label>
                 <input id="source_path" type="text">
             </div>
 
             <div>
-                <label for="sheetDropdown">选择工作表</label>
-                <select id="sheetDropdown" name="sheetDropdown" style="width: 40%;">
-                </select>
+                <label for="sheetDropdown" style="width: 25%;">选择工作表</label>
+                <select id="sheetDropdown" name="sheetDropdown" style="width: 30%;"></select>
             </div>
 
             <div>
-                <label for="rowDropdown">选择行标题分类列</label>
-                <select id="rowDropdown" name="rowDropdown" style="width: 40%;">
-                </select>
+                <label for="columnDropdown" style="width: 25%;">选择要筛选的列</label>
+                <select id="columnDropdown" name="columnDropdown" style="width: 30%;"></select>
             </div>
 
             <div>
-                <label for="columnDropdown">选择列项目分类列</label>
-                <select id="columnDropdown" name="columnDropdown" style="width: 40%;">
-                </select>
-            </div>
-
-            <div>
-                <label for="valueDropdown">选择合计数值列</label>
-                <select id="valueDropdown" name="valueDropdown" style="width: 40%;">
-                </select>
+                <label style="width: 25%;">正则表达式（Python环境）</label>
+                <input id="regex_text" type="text">
             </div>
 
             <div>
@@ -52,9 +43,13 @@ export async function subtotalsFunction() {
         </div>
     `;
 
-    var input = document.getElementById('source_path');
-    input.classList.add('readonly');
-    input.readOnly = true;
+    var path_input = document.getElementById('source_path');
+    path_input.classList.add('readonly');
+    path_input.readOnly = true;
+
+    const sheetDropdown = document.getElementById('sheetDropdown');
+    const columnDropdown = document.getElementById('columnDropdown');
+    const regex_input = document.getElementById('regex_text');
 
     document.getElementById('importButton').addEventListener('click', async () => {
         // 向主進程發送請求，打開文件選擇對話框
@@ -66,7 +61,7 @@ export async function subtotalsFunction() {
             return;
         }
         // 將文件路徑發送到主進程
-        ipcRenderer.send('asynchronous-message', { command: 'subtotals_import', data: {'filePath': filePath }});
+        ipcRenderer.send('asynchronous-message', { command: 'regex_import', data: {'filePath': filePath }});
     });
 
     // 当用户选择工作表时，获取该工作表的列索引
@@ -74,7 +69,7 @@ export async function subtotalsFunction() {
         const selectedSheet = event.target.value;
 
         // 将选择的工作表名发送到主进程，并请求该工作表的列
-        ipcRenderer.send('asynchronous-message', { command: 'subtotals_index', data: {'filePath': filePath, 'sheetName': selectedSheet }});
+        ipcRenderer.send('asynchronous-message', { command: 'regex_index', data: {'filePath': filePath, 'sheetName': selectedSheet }});
     });
 
     // 自动触发工作表选择的更改事件
@@ -94,24 +89,21 @@ export async function subtotalsFunction() {
         savePath = await ipcRenderer.invoke('dialog:saveFile', saveFilters, defaultFileName);
 
         const data = {
-            sheet_value: document.getElementById('sheetDropdown').value,
-            row_value: document.getElementById('rowDropdown').value,
-            column_value: document.getElementById('columnDropdown').value,
-            total_value: document.getElementById('valueDropdown').value,
+            sheet_value: sheetDropdown.value,
+            column_value: columnDropdown.value,
+            regex_pattern: regex_input.value,
             filePath: filePath,
             savePath: savePath
         };
-        ipcRenderer.send('asynchronous-message', { command: 'subtotals_generate', data: data });
+        ipcRenderer.send('asynchronous-message', { command: 'regex_generate', data: data });
     });
 
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
-        if (result[0] === 'subtotals_import') {
+        if (result[0] === 'regex_import') {
             // 将文件路径显示在输入框中
-            document.getElementById(`source_path`).value = filePath;
+            path_input.value = filePath;
 
-            // 获取 select 元素
-            const sheetDropdown = document.getElementById('sheetDropdown');
             // 清空旧的选项
             sheetDropdown.innerHTML = '';
 
@@ -128,35 +120,20 @@ export async function subtotalsFunction() {
             alert('导入成功！');
         }
 
-        if (result[0] === 'subtotals_index') {
-            const rowDropdown = document.getElementById('rowDropdown');
-            const columnDropdown = document.getElementById('columnDropdown');
-            const valueDropdown = document.getElementById('valueDropdown');
+        if (result[0] === 'regex_index') {
     
             // 清空旧的选项
-            rowDropdown.innerHTML = '';
             columnDropdown.innerHTML = '';
-            valueDropdown.innerHTML = '';
     
-            result[1].forEach(column => {
-                const optionRow = document.createElement('option');
-                optionRow.value = column;
-                optionRow.text = column;
-                rowDropdown.appendChild(optionRow);
-    
+            result[1].forEach(column => {    
                 const optionColumn = document.createElement('option');
                 optionColumn.value = column;
                 optionColumn.text = column;
                 columnDropdown.appendChild(optionColumn);
-    
-                const optionValue = document.createElement('option');
-                optionValue.value = column;
-                optionValue.text = column;
-                valueDropdown.appendChild(optionValue);
             });
         }
 
-        if (result[0] === 'subtotals_generate') {
+        if (result[0] === 'regex_generate') {
             alert('生成成功！');
         }
     });

@@ -9,8 +9,8 @@ def subtotals_import(request):
 
     file_path = request.get("data", {}).get("filePath", "")
 
-    sheet_file = pd.ExcelFile(file_path)                                   # 使用pandas讀取Excel文件
-    sheetnames = sheet_file.sheet_names                                    # 獲取所有工作表名稱
+    sheet_file = pd.ExcelFile(file_path)                            # 使用pandas讀取Excel文件
+    sheetnames = sheet_file.sheet_names                             # 獲取所有工作表名稱
 
     return ['subtotals_import', sheetnames]
 
@@ -19,8 +19,8 @@ def subtotals_index(request):
     file_path = request.get("data", {}).get("filePath", "")
     sheet_name = request.get("data", {}).get("sheetName", "")
 
-    df = pd.read_excel(file_path, sheet_name=sheet_name)    # 读取指定的工作表
-    columns = df.columns.tolist()                           # 获取工作表的列名
+    df = pd.read_excel(file_path, sheet_name=sheet_name)            # 读取指定的工作表
+    columns = df.columns.tolist()                                   # 获取工作表的列名
 
     return ['subtotals_index', columns]
 

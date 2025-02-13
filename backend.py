@@ -10,7 +10,9 @@ from file_tools import sort
 from file_tools import collect_file
 from file_tools import copy_folder
 from xlsx_xls_tools import splice
-from xlsx_xls_tools import subtotals_py
+from xlsx_xls_tools import subtotals
+from xlsx_xls_tools import fill
+from xlsx_xls_tools import regex
 from data_analysis_tools import single_sort_export_py
 from data_analysis_tools import bank_statement_sort_py
 
@@ -45,14 +47,24 @@ def main():
         result = splice.input_sheet(request)
     elif request["command"] == "splice_sheet_output":
         result = splice.output_sheet(request)
-
     elif request["command"] == "subtotals_import":
-        result = subtotals_py.subtotals_import(request)
+        result = subtotals.subtotals_import(request)
     elif request["command"] == "subtotals_index":
-        result = subtotals_py.subtotals_index(request)
+        result = subtotals.subtotals_index(request)
     elif request["command"] == "subtotals_generate":
-        result = subtotals_py.subtotals_generate(request)
-
+        result = subtotals.subtotals_generate(request)
+    elif request['command'] == "fill_import":
+        result = fill.select_file(request)
+    elif request['command'] == "fill_index":
+        result = fill.road_sheet(request)
+    elif request['command'] == "fill_generate":
+        result = fill.fill_generate(request)
+    elif request['command'] == "regex_import":
+        result = regex.select_file(request)
+    elif request['command'] == "regex_index":
+        result = regex.road_sheet(request)
+    elif request['command'] == "regex_generate":
+        result = regex.regex_generate(request)
     elif request["command"] == "single_sort_export_import":
         result = single_sort_export_py.single_sort_export_import(request)
     elif request["command"] == "single_sort_export_index":
