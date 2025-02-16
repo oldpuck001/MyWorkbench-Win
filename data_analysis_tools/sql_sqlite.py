@@ -1,61 +1,101 @@
 # sql_sqlite.py
 
 import os
+import shutil
+import sqlite3
 import pandas as pd
 
-def sql_sqlite_import(request):
+def sql_sqlite_folder(request):
 
-    file_path = request.get("data", {}).get("file_path", "")
+    folder_path = request.get("data", {}).get("folder_path", "")
+    file_path = os.path.join(folder_path, 'sqlite_database.db')
 
-    sheet_file = pd.ExcelFile(file_path)                                   # 使用pandas讀取Excel文件
-    sheetnames = sheet_file.sheet_names                                    # 獲取所有工作表名稱
+    # 检测文件路径是否存在
+    if os.path.exists(file_path):
+        result_text = '连接数据库成功！\n'
+    else:
+        result_text = '创建数据库成功！\n'
 
-    return ['sql_sqlite_import', sheetnames]
+    conn = sqlite3.connect(file_path)
+    conn.close()
 
-
-def sql_sqlite_index(request):
-
-    file_path = request.get("data", {}).get("file_path", "")
-    sheet_name = request.get("data", {}).get("sheet_name", "")
-
-    file_extension = os.path.splitext(file_path)[1].lower()
-
-    if file_extension == '.xlsx':
-        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='openpyxl')
-    elif file_extension == '.xls':
-        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='xlrd')
-
-    columns = df.columns.tolist()                           # 获取工作表的列名
-
-    return ['sql_sqlite_index', columns]
+    return ['sql_sqlite_folder', [result_text]]
 
 
-def sql_sqlite_export(request):
+def sql_sqlite_sql(request):
 
-    file_path = request.get("data", {}).get("file_path", "")
-    sheet_name = request.get("data", {}).get("sheet_name", "")
-    value_column = request.get("data", {}).get("value_column", "")
+    folder_path = request.get("data", {}).get("folder_path", "")
+    file_path = os.path.join(folder_path, 'sqlite_database.db')
+    sql_command = request.get("data", {}).get("sql_command", "")
 
-    file_extension = os.path.splitext(file_path)[1].lower()
+    # 连接数据库
+    conn = sqlite3.connect(file_path)
 
-    if file_extension == '.xlsx':
-        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='openpyxl')
-    elif file_extension == '.xls':
-        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='xlrd')
+    # 从连接获取游标
+    curs = conn.cursor()
 
-    # 数据清洗
-    # 
-    df.loc[:, sheet_name] = df[sheet_name].fillna('<空白>').str.strip().replace('', '<空白>')
+    # 执行数据库指令
+    curs.execute(sql_command)
 
-    # 將指定列的空白行轉換為0
-    df[value_column] = df[value_column].replace('', '0')
+    # 提交所做的修改，將其保存到文件中
+    conn.commit()
 
-    # 去除千分位符
-    df[value_column] = df[value_column].astype(str).str.replace(',', '')
+    # 关闭游标
+    curs.close()
 
-    # 將字符格式的數字轉換為數值
-    df.loc[:, value_column] = pd.to_numeric(df.loc[0:, value_column], errors='coerce').fillna(0)
+    # 关闭数据库连接
+    conn.close()
+
+    result_text = f'指令：\n{sql_command}\n执行完毕！\n'
+
+    return ['sql_sqlite_sql', [result_text]]
+
+def sql_sqlite_backup(request):
+
+    folder_path = request.get("data", {}).get("folder_path", "")
+    file_path = os.path.join(folder_path, 'sqlite_database.db')
+
+    target_path = os.path.join(folder_path, 'sqlite_database_1.db')
+
+    counter = 2
+    while os.path.exists(target_path):
+        new_filename = f'sqlite_database_{counter}.xlsx'
+        target_path = os.path.join(folder_path, new_filename)
+        counter += 1
+
+    shutil.copy(file_path, target_path)
+
+    result_text = f'还原点建立成功，文件路径：{target_path}\n'
+
+    return ['sql_sqlite_backup', [result_text]]
 
 
+def sql_sqlite_select(request):
 
-    return ['sql_sqlite_export']
+    folder_path = request.get("data", {}).get("folder_path", "")
+    file_path = os.path.join(folder_path, 'sqlite_database.db')
+    sql_command = request.get("data", {}).get("sql_command", "")
+    save_path = request.get("data", {}).get("save_path", "")
+
+    # 连接数据库
+    conn = sqlite3.connect(file_path)
+
+    # 使用 pandas 读取 SQL 查询结果
+    try:
+        # 将查询结果直接读取为 DataFrame
+        df = pd.read_sql_query(sql_command, conn)
+
+        # 将 DataFrame 导出为 Excel 文件
+        df.to_excel(save_path, index=False, engine='openpyxl')
+
+        result_text = f'查询指令：\n{sql_command}\n执行完毕！\n导出文件路径：{save_path}\n'
+
+    except Exception as e:
+        
+        result_text = f'查询指令：\n{sql_command}\n执行失败！\n错误信息：{str(e)}\n'
+
+    finally:
+
+        conn.close()
+
+    return ['sql_sqlite_select', [result_text]]

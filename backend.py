@@ -15,6 +15,8 @@ from xlsx_xls_tools import fill
 from xlsx_xls_tools import regex
 from xlsx_xls_tools import bank_statement_sort
 from xlsx_xls_tools import generate_chronological_account
+from data_analysis_tools import data_cleaning
+from data_analysis_tools import sql_sqlite
 
 # windows下解决编码问题的语句
 import io
@@ -81,8 +83,20 @@ def main():
         result = generate_chronological_account.generate_chronological_account_debit_or_credit(request)
     elif request["command"] == "generate_chronological_account_export":
         result = generate_chronological_account.generate_chronological_account_export(request)
-
-
+    elif request["command"] == "data_cleaning_import":
+        result = data_cleaning.data_cleaning_import(request)
+    elif request["command"] == "data_cleaning_index":
+        result = data_cleaning.data_cleaning_index(request)
+    elif request["command"] == "data_cleaning_export":
+        result = data_cleaning.data_cleaning_export(request)
+    elif request["command"] == "sql_sqlite_folder":
+        result = sql_sqlite.sql_sqlite_folder(request)
+    elif request["command"] == "sql_sqlite_sql":
+        result = sql_sqlite.sql_sqlite_sql(request)
+    elif request["command"] == "sql_sqlite_backup":
+        result = sql_sqlite.sql_sqlite_backup(request)
+    elif request["command"] == "sql_sqlite_select":
+        result = sql_sqlite.sql_sqlite_select(request)
 
     else:
         result = "Unknown command"

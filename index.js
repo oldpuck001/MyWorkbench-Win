@@ -13,6 +13,8 @@ import { fillFunction } from './xlsx_xls_tools/fill.js';
 import { regexFunction } from './xlsx_xls_tools/regex.js'
 import { bank_statement_sortFunction } from './xlsx_xls_tools/bank_statement_sort.js';
 import { generate_chronological_accountFunction } from './xlsx_xls_tools/generate_chronological_account.js';
+import { data_cleaning_Function } from './data_analysis_tools/data_cleaning.js'
+import { sql_sqlite_Function } from './data_analysis_tools/sql_sqlite.js'
 
 document.querySelectorAll('.sidebar > ul > li').forEach(item => {
     item.addEventListener('click', function(e) {
@@ -85,4 +87,12 @@ window.excel_tools_bank_statement_sortFunction = function() {
 }
 window.excel_tools_generate_chronological_accountFunction = function() {
     generate_chronological_accountFunction();
+}
+
+window.data_analysis_tools_data_cleaningFunction = function() {
+    data_cleaning_Function();
+}
+
+window.data_analysis_tools_sql_sqliteFunction = function() {
+    sql_sqlite_Function();
 }

@@ -107,10 +107,6 @@ def bank_statement_sort_export(request):
     # 统一转换为字符串类型
     df[value_column] = df[value_column].astype(str)
 
-    # 检查是否包含非数字字符
-    #if not df[value_column].str.replace(',', '').str.isnumeric().all():
-    #    return ["bank_statement_sort_no"]
-
     # 去除千分位符
     df[value_column] = df[value_column].str.replace(',', '')
 
