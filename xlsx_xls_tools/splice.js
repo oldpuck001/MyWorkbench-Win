@@ -119,7 +119,7 @@ export async function spliceFunction() {
         
         // 如果所有输入都是空的，返回或者执行某个逻辑
         if (allEmpty) {
-            console.log('所有输入均为空');
+            console.log('所有输入均为空！');
             return;
         }
         
@@ -129,7 +129,7 @@ export async function spliceFunction() {
         const savePath = await ipcRenderer.invoke('dialog:saveFile', saveFilters, defaultFileName);
 
         if (!savePath) {
-            console.log('保存操作取消');
+            console.log('保存操作取消！');
             return;
         }
 

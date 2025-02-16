@@ -13,8 +13,8 @@ from xlsx_xls_tools import splice
 from xlsx_xls_tools import subtotals
 from xlsx_xls_tools import fill
 from xlsx_xls_tools import regex
-from data_analysis_tools import single_sort_export_py
-from data_analysis_tools import bank_statement_sort_py
+from xlsx_xls_tools import bank_statement_sort
+from xlsx_xls_tools import generate_chronological_account
 
 # windows下解决编码问题的语句
 import io
@@ -65,21 +65,24 @@ def main():
         result = regex.road_sheet(request)
     elif request['command'] == "regex_generate":
         result = regex.regex_generate(request)
-    elif request["command"] == "single_sort_export_import":
-        result = single_sort_export_py.single_sort_export_import(request)
-    elif request["command"] == "single_sort_export_index":
-        result = single_sort_export_py.single_sort_export_index(request)
-    elif request["command"] == "single_sort_export_export":
-        result = single_sort_export_py.single_sort_export_export(request)
-
     elif request["command"] == "bank_statement_sort_import":
-        result = bank_statement_sort_py.bank_statement_sort_import(request)
+        result = bank_statement_sort.bank_statement_sort_import(request)
     elif request["command"] == "bank_statement_sort_index":
-        result = bank_statement_sort_py.bank_statement_sort_index(request)
+        result = bank_statement_sort.bank_statement_sort_index(request)
     elif request["command"] == "bank_statement_sort_debit_or_credit":
-        result = bank_statement_sort_py.bank_statement_sort_debit_or_credit(request)
+        result = bank_statement_sort.bank_statement_sort_debit_or_credit(request)
     elif request["command"] == "bank_statement_sort_export":
-        result = bank_statement_sort_py.bank_statement_sort_export(request)
+        result = bank_statement_sort.bank_statement_sort_export(request)
+    elif request["command"] == "generate_chronological_account_import":
+        result = generate_chronological_account.generate_chronological_account_import(request)
+    elif request["command"] == "generate_chronological_account_index":
+        result = generate_chronological_account.generate_chronological_account_index(request)
+    elif request["command"] == "generate_chronological_account_debit_or_credit":
+        result = generate_chronological_account.generate_chronological_account_debit_or_credit(request)
+    elif request["command"] == "generate_chronological_account_export":
+        result = generate_chronological_account.generate_chronological_account_export(request)
+
+
 
     else:
         result = "Unknown command"

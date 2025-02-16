@@ -11,8 +11,8 @@ import { spliceFunction } from './xlsx_xls_tools/splice.js';
 import { subtotalsFunction } from './xlsx_xls_tools/subtotals.js';
 import { fillFunction } from './xlsx_xls_tools/fill.js';
 import { regexFunction } from './xlsx_xls_tools/regex.js'
-import { single_sort_exportFunction } from './data_analysis_tools/single_sort_export.js';
-import { bank_statement_sortFunction } from './data_analysis_tools/bank_statement_sort.js';
+import { bank_statement_sortFunction } from './xlsx_xls_tools/bank_statement_sort.js';
+import { generate_chronological_accountFunction } from './xlsx_xls_tools/generate_chronological_account.js';
 
 document.querySelectorAll('.sidebar > ul > li').forEach(item => {
     item.addEventListener('click', function(e) {
@@ -80,10 +80,9 @@ window.excel_tools_regexFunction = function() {
     regexFunction();
 }
 
-window.data_analysis_tools_single_sort_exportFunction = function() {
-    single_sort_exportFunction();
-}
-
-window.data_analysis_tools_bank_statement_sortFunction = function() {
+window.excel_tools_bank_statement_sortFunction = function() {
     bank_statement_sortFunction();
+}
+window.excel_tools_generate_chronological_accountFunction = function() {
+    generate_chronological_accountFunction();
 }
