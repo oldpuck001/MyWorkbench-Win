@@ -108,6 +108,8 @@ export async function modifythefilenameFunction() {
     document.getElementById('replaceButton').addEventListener('click', () => handleButtonClick('replace'));
     document.getElementById('regexButton').addEventListener('click', () => handleButtonClick('regex'));
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
         if (result[0] === 'filename_modify') {
             document.getElementById(`result_output`).value = '';

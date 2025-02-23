@@ -176,6 +176,8 @@ export async function generate_chronological_accountFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'generate_chronological_account_export', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
         if (result[0] === 'generate_chronological_account_import') {

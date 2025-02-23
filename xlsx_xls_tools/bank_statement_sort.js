@@ -150,6 +150,8 @@ export async function bank_statement_sortFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'bank_statement_sort_export', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
         if (result[0] === 'bank_statement_sort_import') {

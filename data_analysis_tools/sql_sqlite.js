@@ -105,6 +105,8 @@ export async function sql_sqlite_Function() {
         ipcRenderer.send('asynchronous-message', { command: 'sql_sqlite_select', data: data});
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
         if (result[0] === 'sql_sqlite_folder') {

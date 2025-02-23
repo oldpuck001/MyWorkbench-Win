@@ -124,6 +124,8 @@ export async function sortFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'filename_sort', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
         if (result[0] === 'filename_sort') {
             document.getElementById(`result_output`).value = '';

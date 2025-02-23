@@ -106,6 +106,8 @@ export async function data_cleaning_Function() {
         ipcRenderer.send('asynchronous-message', { command: 'data_cleaning_export', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
         if (result[0] === 'data_cleaning_import') {

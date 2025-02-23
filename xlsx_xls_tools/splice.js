@@ -139,6 +139,8 @@ export async function spliceFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'splice_sheet_output', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
         if (result[0] === 'input') {
             

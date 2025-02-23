@@ -94,6 +94,8 @@ export async function exportFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'filename_export', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
         if (result[0] === 'filename_export') {
             document.getElementById(`result_output`).value += '导出成功！\n';

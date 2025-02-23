@@ -246,6 +246,8 @@ export async function imageFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'filename_image', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
         if (result[0] === 'filename_image') {
 

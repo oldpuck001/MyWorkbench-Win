@@ -74,6 +74,8 @@ export async function characterFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'filename_character', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
         if (result[0] === 'filename_character') {
             document.getElementById(`result_output`).value = '';

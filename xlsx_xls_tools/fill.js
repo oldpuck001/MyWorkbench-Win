@@ -110,6 +110,8 @@ export async function fillFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'fill_generate', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
         if (result[0] === 'fill_import') {

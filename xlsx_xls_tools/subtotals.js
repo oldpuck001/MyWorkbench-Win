@@ -104,6 +104,8 @@ export async function subtotalsFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'subtotals_generate', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
         if (result[0] === 'subtotals_import') {

@@ -96,6 +96,8 @@ export async function copy_folderFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'copy_folder', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
         if (result[0] === 'copy_folder') {
             document.getElementById(`result_output`).value += '复制文件夹结构成功！\n';

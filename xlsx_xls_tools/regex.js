@@ -98,6 +98,8 @@ export async function regexFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'regex_generate', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
 
         if (result[0] === 'regex_import') {

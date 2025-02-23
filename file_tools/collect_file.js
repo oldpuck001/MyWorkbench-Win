@@ -96,6 +96,8 @@ export async function collect_fileFunction() {
         ipcRenderer.send('asynchronous-message', { command: 'collect_file', data: data });
     });
 
+    ipcRenderer.removeAllListeners('asynchronous-reply');
+    
     ipcRenderer.on('asynchronous-reply', (event, result) => {
         if (result[0] === 'collect_file') {
             document.getElementById(`result_output`).value = '';
