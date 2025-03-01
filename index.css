@@ -84,8 +84,8 @@ body {
 /* 主内容区域样式 */
 .content {
     flex-grow: 1;                           /* 主内容区域占据剩余空间 */
-    border: 'none';
-    margin: '20px';
+    border: 'none';                         /* 移除元素的边框 */
+    margin: '20px';                         /* 设置元素的外边距为20像素 */
     padding: 20px;                          /* 内边距 */
     margin-left: 250px;                     /* 为内容区域留出侧边栏宽度的空间 */
     overflow-y: auto;                       /* 如果内容过多，启用纵向滚动条 */
@@ -100,11 +100,11 @@ h1 {
 
 /* 输入区域：使用 Flexbox 让输入框和标签对齐 */
 .import, .export {
-    display: flex;
-    flex-direction: column;
-    align-items: center;                    /* 让子元素左对齐 */
-    width: 80%;
-    margin-left: 100px;
+    display: flex;                          /* 使用 Flexbox 布局 */
+    flex-direction: column;                 /* 设置子元素按垂直方向排列 */
+    align-items: center;                    /* 让子元素在交叉轴上居中对齐（水平方向） */
+    width: 80%;                             /* 设置容器的宽度为父元素的80% */
+    margin-left: 100px;                     /* 设置容器的左外边距为100像素 */
 }
 
 /* 输入框行布局 */
@@ -112,16 +112,16 @@ h1 {
     display: flex;                          /* 启用 Flexbox，使 label 和 input 同一行 */
     align-items: center;                    /* 让输入框和标签垂直居中对齐 */
     justify-content: flex-start;            /* 保持 label 和 input 左对齐 */
-    width: 100%;
+    width: 100%;                            /* 设置容器的宽度为父元素的100% */
     margin-bottom: 10px;                    /* 每个输入行之间的间距 */
 }
 
 /* 按钮区域 */
 .import > div:last-child {
-    display: flex;
-    justify-content: center;                /* 让按钮在整行居中 */
-    width: 100%;
-    margin-top: 10px;
+    display: flex;                          /* 使用 Flexbox 布局 */
+    justify-content: center;                /* 让子元素在主轴（水平方向）上居中对齐 */
+    width: 100%;                            /* 设置容器的宽度为100% */
+    margin-top: 10px;                       /* 设置容器的上外边距为10像素 */
 }
 
 /* 输出框行布局 */
@@ -138,31 +138,31 @@ label {
     display: inline-block;                  /* 让 label 变成块级元素但保持 inline 样式 */
     width: 20%;                             /* 确保所有 label 统一宽度 */
     text-align: left;                       /* 让文字靠左对齐，以对齐输入框 */
-    margin-right: 15px;                     /* 右侧外边距 */
+    margin-right: 15px;                     /* 设置元素的右外边距为15像素 */
 }
 
 /* 输入框样式 */
 input {
-    flex: 1;                                /* 让输入框填充剩余空间 */
-    width: 80%;                             /* 预设宽度 */
-    padding: 5px;
+    flex: 1;                                /* 设置输入框的弹性比例，使其填充父容器中的剩余空间 */
+    width: 80%;                             /* 设置输入框的宽度为父容器宽度的80% */
+    padding: 5px;                           /* 设置输入框的内边距为5像素 */
 }
 
 /* 按钮样式 */
 button {
-    width: 150px;
-    background-color: #00c787;
-    border: none;
-    color: white;
-    padding: 10px 15px;
-    cursor: pointer;
-    margin-left: 5px;
-    margin-right: 5px;
+    width: 150px;                           /* 设置按钮的宽度为150像素 */
+    background-color: #00c787;            /* 设置按钮的背景颜色为绿色 */
+    border: none;                           /* 移除按钮的边框 */
+    color: white;                         /* 设置按钮的文本颜色为白色 */
+    padding: 10px 15px;                     /* 设置按钮的内边距：上下10像素，左右15像素 */
+    cursor: pointer;                        /* 设置鼠标悬停时显示为手型指针，表示可点击 */
+    margin-left: 5px;                       /* 设置按钮的左外边距为5像素 */
+    margin-right: 5px;                      /* 设置按钮的右外边距为5像素 */
 }
 
 /* 文本框样式 */
 textarea {
-    flex: 1;                                /* 让输入框填充剩余空间 */
-    width: 80%;                             /* 预设宽度 */
-    padding: 5px;
+    flex: 1;                                /* 设置文本框的弹性比例，使其填充父容器中的剩余空间 */
+    width: 80%;                             /* 设置文本框的宽度为父容器宽度的80% */
+    padding: 5px;                           /* 设置文本框的内边距为5像素 */
 }

@@ -32,13 +32,13 @@ app.whenReady().then(createWindow);
 ipcMain.handle('dialog:openFile', async (event, filters) => {
   const { canceled, filePaths } = await dialog.showOpenDialog({
     properties: ['openFile'],
-    filters: filters
+    filters: filters                    // 使用前端傳遞的文件類型過濾器
   });
   // 如果取消選擇文件，返回 null
   if (canceled) {
     return null;
   } else {
-    return filePaths[0];  // 返回選擇的文件路徑
+    return filePaths[0];                // 返回選擇的文件路徑
   }
 });
 
@@ -59,7 +59,6 @@ ipcMain.handle('get-project-folder', () => {
 
 // IPC 處理文件保存窗口
 ipcMain.handle('dialog:saveFile', async (event, filters, defaultFileName) => {
-  // 打開保存文件對話框，讓用戶選擇保存文件的位置
   const { canceled, filePath } = await dialog.showSaveDialog({
     title: 'Save File',
     defaultPath: defaultFileName,       // 設置預設文件名

@@ -15,6 +15,7 @@ import { bank_statement_sortFunction } from './xlsx_xls_tools/bank_statement_sor
 import { generate_chronological_accountFunction } from './xlsx_xls_tools/generate_chronological_account.js';
 import { data_cleaning_Function } from './data_analysis_tools/data_cleaning.js'
 import { sql_sqlite_Function } from './data_analysis_tools/sql_sqlite.js'
+import { text_comparisonFunction } from './other_tools/text_comparison.js'
 
 document.querySelectorAll('.sidebar > ul > li').forEach(item => {
     item.addEventListener('click', function(e) {
@@ -95,4 +96,8 @@ window.data_analysis_tools_data_cleaningFunction = function() {
 
 window.data_analysis_tools_sql_sqliteFunction = function() {
     sql_sqlite_Function();
+}
+
+window.other_tools_text_comparisonFunction = function() {
+    text_comparisonFunction();
 }

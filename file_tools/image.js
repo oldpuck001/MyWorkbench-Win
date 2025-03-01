@@ -12,7 +12,7 @@ export async function imageFunction() {
 
     contentDiv.innerHTML = `
 
-        <h1>自动修改文件名</h1>
+        <h1>图片文件名修改</h1>
 
         <div class="import">
             <div>

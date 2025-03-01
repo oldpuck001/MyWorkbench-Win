@@ -17,6 +17,7 @@ from xlsx_xls_tools import bank_statement_sort
 from xlsx_xls_tools import generate_chronological_account
 from data_analysis_tools import data_cleaning
 from data_analysis_tools import sql_sqlite
+from other_tools import text_comparison
 
 # windows下解决编码问题的语句
 import io
@@ -97,6 +98,8 @@ def main():
         result = sql_sqlite.sql_sqlite_backup(request)
     elif request["command"] == "sql_sqlite_select":
         result = sql_sqlite.sql_sqlite_select(request)
+    elif request["command"] == "text_comparison":
+        result = text_comparison.text_comparison(request)
 
     else:
         result = "Unknown command"
