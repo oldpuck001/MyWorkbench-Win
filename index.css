@@ -1,45 +1,87 @@
 /* 设置全局样式 */
 body {
-    font-family: Arial, sans-serif;     /* 全局字体样式 */
-    display: flex;                      /* 使用 flex 布局，方便侧边栏和内容区域并排显示 */
-    height: 100vh;                      /* 页面高度占满视窗高度 */
-    margin: 0;                          /* 移除默认的页面边距 */
-    overflow: hidden;                   /* 防止页面内容溢出滚动 */
+    font-family: Arial, sans-serif;         /* 全局字体样式 */
+    display: flex;                          /* 使用 flex 布局，方便侧边栏和内容区域并排显示 */
+    height: 100vh;                          /* 页面高度占满视窗高度 */
+    margin: 0;                              /* 移除默认的页面边距 */
+    overflow: hidden;                       /* 防止页面内容溢出滚动 */
 }
 
 /* 侧边栏样式 */
 .sidebar {
-    width: 250px;                       /* 侧边栏的初始宽度 */
-    position: fixed;                    /* 固定侧边栏位置 */
-    height: 100vh;                      /* 侧边栏高度占满视窗高度 */
-    overflow-y: auto;                   /* 添加滚动支持，适应内容过多的情况 */
-    background-color: #f4f4f4;        /* 背景颜色为浅灰色 */
-    padding: 15px;                      /* 内边距，用于内容与边界的间距 */
-    font-size: 14px;                    /* 文字大小 */
+    position: fixed;                        /* 固定侧边栏位置 */
+    left: 0;                                /* 贴齐视窗左边 */
+    top: 0;                                 /* 贴齐视窗顶部 */
+    width: 250px;                           /* 侧边栏的初始宽度 */
+    height: 100vh;                          /* 侧边栏高度占满视窗高度 */
+    overflow-y: auto;                       /* 添加滚动支持，适应内容过多的情况 */
+    background-color: #f4f4f4;            /* 背景颜色为浅灰色 */
+    padding: 15px;                          /* 内边距，用于内容与边界的间距 */
+    font-size: 14px;                        /* 文字大小 */
+    overflow: hidden;                       /* 隐藏所有溢出的内容（这行会覆盖前面的 overflow-y: auto） */
     transition: width 0.3s ease, padding 0.3s ease; /* 添加过渡效果，提升隐藏和显示的平滑度 */
 }
 
-/* 隐藏状态下的侧边栏 */
+/* 主内容区域样式 */
+.content {
+    flex-grow: 1;                           /* 主内容区域占据剩余空间 */
+    border: 'none';                         /* 移除元素的边框 */
+    margin: '20px';                         /* 设置元素的外边距为20像素 */
+    padding: 20px;                          /* 内边距 */
+    margin-left: 250px;                     /* 为内容区域留出侧边栏宽度的空间 */
+    overflow-y: auto;                       /* 如果内容过多，启用纵向滚动条 */
+    transition: margin-left 0.3s ease;      /* 添加左边距变化的动画效果 */
+}
+
+/* 側邊欄切換按鈕 */
+#toggleSidebarBtn {
+    position: absolute;                     /* 使用絕對定位，相對於最近的定位父元素（通常是 body 或其他容器） */
+    left: 265px;                            /* 距離左側 265px，略微超出側邊欄邊界（假設側邊欄寬度為 250px，外加 15px padding） */
+    top: 10px;                              /* 距離頂部 10px，讓按鈕靠近頁面上方 */
+    width: 20px;                            /* 按鈕寬度為 20px */
+    height: 20px;                           /* 按鈕高度為 20px */
+    padding: 0;                             /* 移除內邊距，確保按鈕尺寸固定 */
+    background-color: #444;               /* 背景顏色為深灰色 */
+    color: white;                         /* 按鈕文字顏色為白色 */
+    border: none;                           /* 移除邊框，使按鈕外觀更簡潔 */
+    cursor: pointer;                        /* 滑鼠懸停時顯示為可點擊狀態 */
+    font-size: 15px;                        /* 設定按鈕內文字的大小 */
+    transition: left 0.3s ease;             /* 左側位置變化時使用 0.3 秒平滑過渡效果 */
+}
+
+/* 隱藏時的側邊欄樣式 */
 .sidebar.hidden {
-    width: 0;                           /* 隐藏时宽度设置为 0 */
-    padding: 0;                         /* 去掉内边距，完全隐藏内容 */
+    width: 0;                               /* 將寬度設為 0，使其不可見 */
+    padding: 0;                             /* 移除內邊距，避免內容佔空間 */
+    overflow: hidden;                       /* 隱藏溢出的內容，確保不會顯示任何內部元素 */
+}
+
+/* 隱藏側邊欄時調整內容區域 */
+.sidebar.hidden ~ .content {
+    margin-left: 0;                         /* 移除左邊距，讓內容區域向左貼齊視窗 */
+    width: 100%;                            /* 將內容區域的寬度設為 100%，填滿整個可視區域 */
+}
+
+/* 當側邊欄隱藏時，調整按鈕位置 */
+#sidebar.hidden + #toggleSidebarBtn {
+    left: 10px;                             /* 將切換按鈕移到視窗左邊緣，保持可見性 */                 
 }
 
 /* 侧边栏中的无序列表样式 */
 .sidebar ul {
-    list-style: none;                   /* 移除默认的列表样式 */
-    padding: 0;                         /* 去掉内边距 */
-    margin: 0;                          /* 去掉外边距 */
+    list-style: none;                       /* 移除默认的列表样式 */
+    padding: 0;                             /* 去掉内边距 */
+    margin: 0;                              /* 去掉外边距 */
 }
 
 /* 列表项样式 */
 .sidebar ul li {
-    padding: 8px;                       /* 列表项内边距，增加点击区域 */
-    background-color: #fff;           /* 列表项背景为白色 */
-    margin-bottom: 8px;                 /* 每个列表项之间的间距 */
-    cursor: pointer;                    /* 鼠标悬停时显示为可点击状态 */
-    border-radius: 4px;                 /* 列表项圆角边框 */
-    transition: background-color 0.3s;  /* 添加背景颜色的过渡效果 */
+    padding: 8px;                           /* 列表项内边距，增加点击区域 */
+    background-color: #fff;               /* 列表项背景为白色 */
+    margin-bottom: 8px;                     /* 每个列表项之间的间距 */
+    cursor: pointer;                        /* 鼠标悬停时显示为可点击状态 */
+    border-radius: 4px;                     /* 列表项圆角边框 */
+    transition: background-color 0.3s;      /* 添加背景颜色的过渡效果 */
 }
 
 /* 列表项悬停样式 */
@@ -81,17 +123,6 @@ body {
     width: 100%;                            /* 内容区域宽度调整为 100% */
 }
 
-/* 主内容区域样式 */
-.content {
-    flex-grow: 1;                           /* 主内容区域占据剩余空间 */
-    border: 'none';                         /* 移除元素的边框 */
-    margin: '20px';                         /* 设置元素的外边距为20像素 */
-    padding: 20px;                          /* 内边距 */
-    margin-left: 250px;                     /* 为内容区域留出侧边栏宽度的空间 */
-    overflow-y: auto;                       /* 如果内容过多，启用纵向滚动条 */
-    transition: margin-left 0.3s ease;      /* 添加左边距变化的动画效果 */
-}
-
 /* 一级标题：水平居中显示，宽度占满父容器 */
 h1 {
     text-align: center;                     /* 让标题文本水平居中 */
@@ -129,7 +160,7 @@ h1 {
     display: flex;                          /* 启用 Flexbox，使 label 和 input 同一行 */
     align-items: center;                    /* 让输入框和标签垂直居中对齐 */
     justify-content: flex-start;            /* 保持 label 和 input 左对齐 */
-    width: 100%;
+    width: 100%;                            /* 设置容器的宽度为100% */
     margin-bottom: 10px;                    /* 每个输入行之间的间距 */
 }
 
