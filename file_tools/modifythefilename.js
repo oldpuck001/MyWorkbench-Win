@@ -34,7 +34,7 @@ export async function modifythefilenameFunction() {
                 <input id="folder_path" type="text">
             </div>
 
-            <div>
+            <div style="display: flex; justify-content: center;">
                 <button id="selectButton">选择文件夹</button>
                 <button id="findButton">查找指定字符</button>
                 <button id="addButton">添加指定字符</button>

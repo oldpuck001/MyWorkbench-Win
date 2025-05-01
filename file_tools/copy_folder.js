@@ -1,4 +1,4 @@
-// copy_folder
+// copy_folder.js
 
 const { ipcRenderer } = require('electron');
 

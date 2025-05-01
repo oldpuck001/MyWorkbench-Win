@@ -1,4 +1,4 @@
-# image_py.py
+# image.py
 
 import os
 

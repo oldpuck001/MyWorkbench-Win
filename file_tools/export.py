@@ -1,4 +1,4 @@
-# export_py.py
+# export.py
 
 import os
 import re

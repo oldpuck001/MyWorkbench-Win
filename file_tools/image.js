@@ -16,7 +16,7 @@ export async function imageFunction() {
 
         <div class="import">
             <div>
-                <canvas id="imageCanvas" width="860" height="540"></canvas>
+                <canvas id="imageCanvas" width="860" height="540" style="display: block; margin: 0px auto;"></canvas>
             </div>
 
             <div>
@@ -25,7 +25,7 @@ export async function imageFunction() {
                 <button id="selectButton">选择文件夹</button>
             </div>
 
-            <div>
+            <div style="display: flex; justify-content: center;">
                 <button id="previousButton">⇤</button>
                 <button id="leftButton">⟲</button>
                 <button id="zoominButton">+</button>

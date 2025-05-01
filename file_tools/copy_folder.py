@@ -23,7 +23,6 @@ def copy_folder(request):
                 copy_structure_recursive(src_item, dst_item)
 
 
-
     # 开始复制文件夹结构
     copy_structure_recursive(sourcePath, targetPath)
 

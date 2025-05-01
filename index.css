@@ -14,19 +14,19 @@ body {
     top: 0;                                 /* 贴齐视窗顶部 */
     width: 250px;                           /* 侧边栏的初始宽度 */
     height: 100vh;                          /* 侧边栏高度占满视窗高度 */
+    overflow-x: hidden;                     /* 隱藏橫向溢出 */
     overflow-y: auto;                       /* 添加滚动支持，适应内容过多的情况 */
     background-color: #f4f4f4;            /* 背景颜色为浅灰色 */
     padding: 15px;                          /* 内边距，用于内容与边界的间距 */
     font-size: 14px;                        /* 文字大小 */
-    overflow: hidden;                       /* 隐藏所有溢出的内容（这行会覆盖前面的 overflow-y: auto） */
     transition: width 0.3s ease, padding 0.3s ease; /* 添加过渡效果，提升隐藏和显示的平滑度 */
 }
 
 /* 主内容区域样式 */
 .content {
     flex-grow: 1;                           /* 主内容区域占据剩余空间 */
-    border: 'none';                         /* 移除元素的边框 */
-    margin: '20px';                         /* 设置元素的外边距为20像素 */
+    border: none;                           /* 移除元素的边框 */
+    margin: 20px;                           /* 设置元素的外边距为20像素 */
     padding: 20px;                          /* 内边距 */
     margin-left: 250px;                     /* 为内容区域留出侧边栏宽度的空间 */
     overflow-y: auto;                       /* 如果内容过多，启用纵向滚动条 */
@@ -56,14 +56,14 @@ body {
     overflow: hidden;                       /* 隱藏溢出的內容，確保不會顯示任何內部元素 */
 }
 
-/* 隱藏側邊欄時調整內容區域 */
+/* 隐藏侧边栏时，调整主内容的左边距 */
 .sidebar.hidden ~ .content {
     margin-left: 0;                         /* 移除左邊距，讓內容區域向左貼齊視窗 */
-    width: 100%;                            /* 將內容區域的寬度設為 100%，填滿整個可視區域 */
+    width: 100%;                            /* 内容区域宽度调整为100%，填滿整個可視區域 */
 }
 
 /* 當側邊欄隱藏時，調整按鈕位置 */
-#sidebar.hidden + #toggleSidebarBtn {
+.sidebar.hidden + #toggleSidebarBtn {
     left: 10px;                             /* 將切換按鈕移到視窗左邊緣，保持可見性 */                 
 }
 
@@ -117,12 +117,6 @@ body {
     background-color: rgba(0, 123, 255, 0.2); /* 鼠标悬停时背景变为更深的淡蓝色 */
 }
 
-/* 隐藏侧边栏时，调整主内容的左边距 */
-.sidebar.hidden ~ .content {
-    margin-left: 0;                         /* 隐藏侧边栏时，内容区域占满宽度 */
-    width: 100%;                            /* 内容区域宽度调整为 100% */
-}
-
 /* 一级标题：水平居中显示，宽度占满父容器 */
 h1 {
     text-align: center;                     /* 让标题文本水平居中 */
@@ -145,14 +139,6 @@ h1 {
     justify-content: flex-start;            /* 保持 label 和 input 左对齐 */
     width: 100%;                            /* 设置容器的宽度为父元素的100% */
     margin-bottom: 10px;                    /* 每个输入行之间的间距 */
-}
-
-/* 按钮区域 */
-.import > div:last-child {
-    display: flex;                          /* 使用 Flexbox 布局 */
-    justify-content: center;                /* 让子元素在主轴（水平方向）上居中对齐 */
-    width: 100%;                            /* 设置容器的宽度为100% */
-    margin-top: 10px;                       /* 设置容器的上外边距为10像素 */
 }
 
 /* 输出框行布局 */
@@ -179,7 +165,15 @@ input {
     padding: 5px;                           /* 设置输入框的内边距为5像素 */
 }
 
-/* 按钮样式 */
+/* 按钮区域 */
+.import > div:last-child {
+    display: flex;                          /* 使用 Flexbox 布局 */
+    justify-content: center;                /* 让子元素在主轴（水平方向）上居中对齐 */
+    width: 100%;                            /* 设置容器的宽度为100% */
+    margin-top: 10px;                       /* 设置容器的上外边距为10像素 */
+}
+
+/* 單獨按鈕樣式 */
 button {
     width: 150px;                           /* 设置按钮的宽度为150像素 */
     background-color: #00c787;            /* 设置按钮的背景颜色为绿色 */

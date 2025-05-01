@@ -1,4 +1,4 @@
-// collect_file
+// collect_file.js
 
 const { ipcRenderer } = require('electron');
 

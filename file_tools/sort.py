@@ -1,4 +1,4 @@
-# sort_py.py
+# sort.py
 
 import os
 import shutil
