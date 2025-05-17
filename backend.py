@@ -9,14 +9,24 @@ from file_tools import export
 from file_tools import sort
 from file_tools import collect_file
 from file_tools import copy_folder
-from xlsx_xls_tools import splice
-from xlsx_xls_tools import subtotals
-from xlsx_xls_tools import fill
-from xlsx_xls_tools import regex
-from xlsx_xls_tools import bank_statement_sort
-from xlsx_xls_tools import generate_chronological_account
+
+from xlsx_tools import splice
+from xlsx_tools import subtotals
+from xlsx_tools import fill
+from xlsx_tools import regex
+from xlsx_tools import bank_statement_sort
+from xlsx_tools import generate_chronological_account
+
+from audit_tools import select_folder
+from audit_tools import set_up
+from audit_tools import import_account_balance_sheet
+from audit_tools import import_chronological_account
+
+
+
 from data_analysis_tools import data_cleaning
 from data_analysis_tools import sql_sqlite
+
 from other_tools import text_comparison
 
 # windows下解决编码问题的语句
@@ -46,6 +56,8 @@ def main():
         result = collect_file.collect_file(request)
     elif request["command"] == "copy_folder":
         result = copy_folder.copy_folder(request)
+
+
     elif request["command"] == "splice_sheet_input":
         result = splice.input_sheet(request)
     elif request["command"] == "splice_sheet_output":
@@ -84,6 +96,38 @@ def main():
         result = generate_chronological_account.generate_chronological_account_debit_or_credit(request)
     elif request["command"] == "generate_chronological_account_export":
         result = generate_chronological_account.generate_chronological_account_export(request)
+
+
+    elif request["command"] == "select_folder_path":
+        result = select_folder.select_folder_path(request)
+
+    elif request["command"] == "import_config":
+        result = set_up.import_config(request)
+    elif request['command'] == 'select_basic_file':
+        result =set_up.select_basic_file(request)
+    elif request["command"] == "import_basic":
+        result = set_up.import_basic(request)
+    elif request["command"] == "save_settings":
+        result = set_up.save_settings(request)
+
+    elif request["command"] == "import_account_balance_sheet":
+        result = import_account_balance_sheet.import_account_balance_sheet(request)
+    elif request["command"] == "index_account_balance_sheet":
+        result = import_account_balance_sheet.index_account_balance_sheet(request)
+    elif request["command"] == "export_account_balance_sheet":
+        result = import_account_balance_sheet.export_account_balance_sheet(request)
+
+    elif request["command"] == "import_chronological_account":
+        result = import_chronological_account.import_chronological_account(request)
+    elif request["command"] == "index_chronological_account":
+        result = import_chronological_account.index_chronological_account(request)
+    elif request["command"] == "export_chronological_account":
+        result = import_chronological_account.export_chronological_account(request)
+
+
+
+
+
     elif request["command"] == "data_cleaning_import":
         result = data_cleaning.data_cleaning_import(request)
     elif request["command"] == "data_cleaning_index":

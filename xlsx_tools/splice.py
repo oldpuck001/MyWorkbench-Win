@@ -1,4 +1,4 @@
-# splice_py.py
+# splice.py
 
 import pandas as pd
 import openpyxl

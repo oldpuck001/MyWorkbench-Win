@@ -7,12 +7,20 @@ import { sortFunction } from './file_tools/sort.js'
 import { exportFunction } from './file_tools/export.js'
 import { collect_fileFunction } from './file_tools/collect_file.js'
 import { copy_folderFunction } from './file_tools/copy_folder.js'
-import { spliceFunction } from './xlsx_xls_tools/splice.js';
-import { subtotalsFunction } from './xlsx_xls_tools/subtotals.js';
-import { fillFunction } from './xlsx_xls_tools/fill.js';
-import { regexFunction } from './xlsx_xls_tools/regex.js'
-import { bank_statement_sortFunction } from './xlsx_xls_tools/bank_statement_sort.js';
-import { generate_chronological_accountFunction } from './xlsx_xls_tools/generate_chronological_account.js';
+
+import { spliceFunction } from './xlsx_tools/splice.js';
+import { subtotalsFunction } from './xlsx_tools/subtotals.js';
+import { fillFunction } from './xlsx_tools/fill.js';
+import { regexFunction } from './xlsx_tools/regex.js'
+import { bank_statement_sortFunction } from './xlsx_tools/bank_statement_sort.js';
+import { generate_chronological_accountFunction } from './xlsx_tools/generate_chronological_account.js';
+
+import { select_folder } from './audit_tools/select_folder.js'
+import { set_up } from './audit_tools/set_up.js';
+import { import_account_balance_sheet } from './audit_tools/import_account_balance_sheet.js';
+import { import_chronological_account } from './audit_tools/import_chronological_account.js';
+
+
 import { data_cleaning_Function } from './data_analysis_tools/data_cleaning.js'
 import { sql_sqlite_Function } from './data_analysis_tools/sql_sqlite.js'
 import { text_comparisonFunction } from './other_tools/text_comparison.js'
@@ -87,7 +95,7 @@ window.file_tools_copy_folderFunction = function() {
     copy_folderFunction();
 }
 
-window.excel_tools_spliceFunction = function() {
+window.xlsx_tools_spliceFunction = function() {
     spliceFunction();
 }
 
@@ -109,6 +117,24 @@ window.excel_tools_bank_statement_sortFunction = function() {
 window.excel_tools_generate_chronological_accountFunction = function() {
     generate_chronological_accountFunction();
 }
+
+window.select_folder = function() {
+    select_folder();
+}
+
+window.set_up = function() {
+    set_up();
+}
+
+window.import_account_balance_sheet = function() {
+    import_account_balance_sheet();
+}
+
+window.import_chronological_account = function() {
+    import_chronological_account();
+}
+
+
 
 window.data_analysis_tools_data_cleaningFunction = function() {
     data_cleaning_Function();
