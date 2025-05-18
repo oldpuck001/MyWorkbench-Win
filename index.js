@@ -19,7 +19,9 @@ import { select_folder } from './audit_tools/select_folder.js'
 import { set_up } from './audit_tools/set_up.js';
 import { import_account_balance_sheet } from './audit_tools/import_account_balance_sheet.js';
 import { import_chronological_account } from './audit_tools/import_chronological_account.js';
-
+import { import_balance_sheet } from './audit_tools/import_balance_sheet.js';
+import { import_income_statement } from './audit_tools/import_income_statement.js';
+import { import_cash_flow_statement } from './audit_tools/import_cash_flow_statement.js';
 
 import { data_cleaning_Function } from './data_analysis_tools/data_cleaning.js'
 import { sql_sqlite_Function } from './data_analysis_tools/sql_sqlite.js'
@@ -132,6 +134,18 @@ window.import_account_balance_sheet = function() {
 
 window.import_chronological_account = function() {
     import_chronological_account();
+}
+
+window.import_balance_sheet = function() {
+    import_balance_sheet();
+}
+
+window.import_income_statement = function() {
+    import_income_statement();
+}
+
+window.import_cash_flow_statement = function() {
+    import_cash_flow_statement();
 }
 
 

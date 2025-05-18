@@ -21,7 +21,9 @@ from audit_tools import select_folder
 from audit_tools import set_up
 from audit_tools import import_account_balance_sheet
 from audit_tools import import_chronological_account
-
+from audit_tools import import_balance_sheet
+from audit_tools import import_income_statement
+from audit_tools import import_cash_flow_statement
 
 
 from data_analysis_tools import data_cleaning
@@ -123,6 +125,22 @@ def main():
         result = import_chronological_account.index_chronological_account(request)
     elif request["command"] == "export_chronological_account":
         result = import_chronological_account.export_chronological_account(request)
+
+    elif request["command"] == "select_balance_sheet":
+        result = import_balance_sheet.select_balance_sheet(request)
+    elif request["command"] == "import_balance_sheet":
+        result = import_balance_sheet.import_balance_sheet(request)
+
+    elif request["command"] == "select_income_statement":
+        result = import_income_statement.select_income_statement(request)
+    elif request["command"] == "import_income_statement":
+        result = import_income_statement.import_income_statement(request)
+
+    elif request["command"] == "select_cash_flow_statement":
+        result = import_cash_flow_statement.select_cash_flow_statement(request)
+    elif request["command"] == "import_cash_flow_statement":
+        result = import_cash_flow_statement.import_cash_flow_statement(request)
+
 
 
 
