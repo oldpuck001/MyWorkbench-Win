@@ -28,14 +28,14 @@ export async function subtotalsFunction() {
             </div>
 
             <div>
-                <label for="rowDropdown">选择行标题分类列</label>
-                <select id="rowDropdown" name="rowDropdown">
+                <label for="columnDropdown">选择行项目分类列</label>
+                <select id="columnDropdown" name="columnDropdown">
                 </select>
             </div>
 
             <div>
-                <label for="columnDropdown">选择列项目分类列</label>
-                <select id="columnDropdown" name="columnDropdown">
+                <label for="rowDropdown">选择列标题分类列</label>
+                <select id="rowDropdown" name="rowDropdown">
                 </select>
             </div>
 

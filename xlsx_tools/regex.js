@@ -23,12 +23,12 @@ export async function regexFunction() {
 
             <div>
                 <label for="sheetDropdown" style="width: 25%;">选择工作表</label>
-                <select id="sheetDropdown" name="sheetDropdown" style="width: 30%;"></select>
+                <select id="sheetDropdown" name="sheetDropdown"></select>
             </div>
 
             <div>
                 <label for="columnDropdown" style="width: 25%;">选择要筛选的列</label>
-                <select id="columnDropdown" name="columnDropdown" style="width: 30%;"></select>
+                <select id="columnDropdown" name="columnDropdown"></select>
             </div>
 
             <div>
