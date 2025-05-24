@@ -1,5 +1,6 @@
-# subtotals_py.py
+# subtotals.py
 
+import os
 import pandas as pd
 import openpyxl
 from openpyxl.utils import get_column_letter
@@ -19,12 +20,19 @@ def subtotals_index(request):
     file_path = request.get("data", {}).get("filePath", "")
     sheet_name = request.get("data", {}).get("sheetName", "")
 
-    df = pd.read_excel(file_path, sheet_name=sheet_name)            # 读取指定的工作表
-    columns = df.columns.tolist()                                   # 获取工作表的列名
+    file_extension = os.path.splitext(file_path)[1].lower()
+
+    if file_extension == '.xlsx':
+        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='openpyxl')
+    elif file_extension == '.xls':
+        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='xlrd')
+
+    columns = df.columns.tolist()
 
     return ['subtotals_index', columns]
 
 def subtotals_generate(request):
+
     file_path = request.get("data", {}).get("filePath", "")
     save_path = request.get("data", {}).get("savePath", "")
     sheet_name = request.get("data", {}).get("sheet_value", "")
@@ -33,9 +41,19 @@ def subtotals_generate(request):
     numbervalue = request.get("data", {}).get("total_value", "")
 
     if columnsvalue == rowvalue or columnsvalue == numbervalue or rowvalue == numbervalue:
-        return
+
+        result_text = {'result_message': '行标题分类列、列项目分类列、合计数值列必须为不通列，请重新选择！'}
+
+        return ['subtotals_generate', result_text]
+    
     else:
-        df = pd.read_excel(file_path, sheet_name=sheet_name)    # 读取指定的工作表
+
+        file_extension = os.path.splitext(file_path)[1].lower()
+
+        if file_extension == '.xlsx':
+            df = pd.read_excel(file_path, sheet_name=sheet_name, engine='openpyxl')
+        elif file_extension == '.xls':
+            df = pd.read_excel(file_path, sheet_name=sheet_name, engine='xlrd')
 
         # 將指定列的空白行轉換為0
         df[numbervalue] = df[numbervalue].replace('', '0')
@@ -53,7 +71,7 @@ def subtotals_generate(request):
         wb = openpyxl.Workbook()
         ws = wb.active
 
-        # 重設索引並將 DataFrame 的數據添加到 Excel 工作表
+        # 重設索引並將DataFrame的數據添加到Excel工作表
         exportdf.reset_index(inplace=True)
 
         # 修改DataFrame的第1列第1行（列标题）为空白
@@ -94,4 +112,6 @@ def subtotals_generate(request):
         # 保存Excel文件
         wb.save(save_path)
 
-    return ['subtotals_generate']
+    result_text = {'result_message': '生成成功！'}
+
+    return ['subtotals_generate', result_text]

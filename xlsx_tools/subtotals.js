@@ -23,25 +23,25 @@ export async function subtotalsFunction() {
 
             <div>
                 <label for="sheetDropdown">选择工作表</label>
-                <select id="sheetDropdown" name="sheetDropdown" style="width: 40%;">
+                <select id="sheetDropdown" name="sheetDropdown">
                 </select>
             </div>
 
             <div>
                 <label for="rowDropdown">选择行标题分类列</label>
-                <select id="rowDropdown" name="rowDropdown" style="width: 40%;">
+                <select id="rowDropdown" name="rowDropdown">
                 </select>
             </div>
 
             <div>
                 <label for="columnDropdown">选择列项目分类列</label>
-                <select id="columnDropdown" name="columnDropdown" style="width: 40%;">
+                <select id="columnDropdown" name="columnDropdown">
                 </select>
             </div>
 
             <div>
                 <label for="valueDropdown">选择合计数值列</label>
-                <select id="valueDropdown" name="valueDropdown" style="width: 40%;">
+                <select id="valueDropdown" name="valueDropdown">
                 </select>
             </div>
 
@@ -159,7 +159,7 @@ export async function subtotalsFunction() {
         }
 
         if (result[0] === 'subtotals_generate') {
-            alert('生成成功！');
+            alert(result[1]['result_message']);
         }
     });
 }

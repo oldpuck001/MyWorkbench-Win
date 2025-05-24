@@ -12,10 +12,7 @@ from file_tools import copy_folder
 
 from xlsx_tools import splice
 from xlsx_tools import subtotals
-from xlsx_tools import fill
 from xlsx_tools import regex
-from xlsx_tools import bank_statement_sort
-from xlsx_tools import generate_chronological_account
 
 from audit_tools import select_folder
 from audit_tools import set_up
@@ -28,6 +25,9 @@ from audit_tools import import_cash_flow_statement
 
 from data_analysis_tools import data_cleaning
 from data_analysis_tools import sql_sqlite
+from data_analysis_tools import fill
+from data_analysis_tools import bank_statement_sort
+from data_analysis_tools import generate_chronological_account
 
 from other_tools import text_comparison
 
@@ -70,34 +70,12 @@ def main():
         result = subtotals.subtotals_index(request)
     elif request["command"] == "subtotals_generate":
         result = subtotals.subtotals_generate(request)
-    elif request['command'] == "fill_import":
-        result = fill.select_file(request)
-    elif request['command'] == "fill_index":
-        result = fill.road_sheet(request)
-    elif request['command'] == "fill_generate":
-        result = fill.fill_generate(request)
     elif request['command'] == "regex_import":
         result = regex.select_file(request)
     elif request['command'] == "regex_index":
         result = regex.road_sheet(request)
     elif request['command'] == "regex_generate":
         result = regex.regex_generate(request)
-    elif request["command"] == "bank_statement_sort_import":
-        result = bank_statement_sort.bank_statement_sort_import(request)
-    elif request["command"] == "bank_statement_sort_index":
-        result = bank_statement_sort.bank_statement_sort_index(request)
-    elif request["command"] == "bank_statement_sort_debit_or_credit":
-        result = bank_statement_sort.bank_statement_sort_debit_or_credit(request)
-    elif request["command"] == "bank_statement_sort_export":
-        result = bank_statement_sort.bank_statement_sort_export(request)
-    elif request["command"] == "generate_chronological_account_import":
-        result = generate_chronological_account.generate_chronological_account_import(request)
-    elif request["command"] == "generate_chronological_account_index":
-        result = generate_chronological_account.generate_chronological_account_index(request)
-    elif request["command"] == "generate_chronological_account_debit_or_credit":
-        result = generate_chronological_account.generate_chronological_account_debit_or_credit(request)
-    elif request["command"] == "generate_chronological_account_export":
-        result = generate_chronological_account.generate_chronological_account_export(request)
 
 
     elif request["command"] == "select_folder_path":
@@ -160,6 +138,29 @@ def main():
         result = sql_sqlite.sql_sqlite_backup(request)
     elif request["command"] == "sql_sqlite_select":
         result = sql_sqlite.sql_sqlite_select(request)
+    elif request['command'] == "fill_import":
+        result = fill.select_file(request)
+    elif request['command'] == "fill_index":
+        result = fill.road_sheet(request)
+    elif request['command'] == "fill_generate":
+        result = fill.fill_generate(request)
+    elif request["command"] == "bank_statement_sort_import":
+        result = bank_statement_sort.bank_statement_sort_import(request)
+    elif request["command"] == "bank_statement_sort_index":
+        result = bank_statement_sort.bank_statement_sort_index(request)
+    elif request["command"] == "bank_statement_sort_debit_or_credit":
+        result = bank_statement_sort.bank_statement_sort_debit_or_credit(request)
+    elif request["command"] == "bank_statement_sort_export":
+        result = bank_statement_sort.bank_statement_sort_export(request)
+    elif request["command"] == "generate_chronological_account_import":
+        result = generate_chronological_account.generate_chronological_account_import(request)
+    elif request["command"] == "generate_chronological_account_index":
+        result = generate_chronological_account.generate_chronological_account_index(request)
+    elif request["command"] == "generate_chronological_account_debit_or_credit":
+        result = generate_chronological_account.generate_chronological_account_debit_or_credit(request)
+    elif request["command"] == "generate_chronological_account_export":
+        result = generate_chronological_account.generate_chronological_account_export(request)
+
     elif request["command"] == "text_comparison":
         result = text_comparison.text_comparison(request)
 
