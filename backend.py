@@ -29,7 +29,10 @@ from data_analysis_tools import fill
 from data_analysis_tools import bank_statement_sort
 from data_analysis_tools import generate_chronological_account
 
+from other_tools import find_subset
 from other_tools import text_comparison
+from other_tools import docx_comparison
+from other_tools import xlsx_comparison
 
 # windows下解决编码问题的语句
 import io
@@ -161,8 +164,23 @@ def main():
     elif request["command"] == "generate_chronological_account_export":
         result = generate_chronological_account.generate_chronological_account_export(request)
 
+    elif request["command"] == "find_subset_sheetnames_import":
+        result = find_subset.find_subset_sheetnames_import(request)
+    elif request["command"] == "find_subset_columns_index":
+        result = find_subset.find_subset_columns_index(request)
+    elif request["command"] == "find_subset_import":
+        result = find_subset.find_subset_import(request)
+    elif request["command"] == "find_subset_export":
+        result = find_subset.find_subset_export(request)
+
     elif request["command"] == "text_comparison":
         result = text_comparison.text_comparison(request)
+    elif request["command"] == "docx_comparison":
+        result = docx_comparison.compare_word_documents(request)
+    elif request["command"] == "xlsx_comparision_sheetnames":
+        result = xlsx_comparison.xlsx_comparision_sheetnames(request)
+    elif request["command"] == "xlsx_comparison":
+        result = xlsx_comparison.compare_excels(request)
 
     else:
         result = "Unknown command"

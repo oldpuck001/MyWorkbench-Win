@@ -2,7 +2,7 @@
 
 const { ipcRenderer } = require('electron');
 
-export async function text_comparisonFunction() {
+export async function text_comparison() {
 
     // 獲取 DOM 元素
     const contentDiv = document.getElementById('content');
@@ -17,14 +17,14 @@ export async function text_comparisonFunction() {
                 <label>文本1：</label>
             </div>
             <div>
-                <textarea id="text_1" rows="10"></textarea>
+                <textarea id="text_1" rows="8"></textarea>
             </div>
 
             <div>
                 <label>文本2：</label>
             </div>
             <div>
-                <textarea id="text_2" rows="10"></textarea>
+                <textarea id="text_2" rows="8"></textarea>
             </div>
 
             <div>
@@ -37,7 +37,7 @@ export async function text_comparisonFunction() {
                 <label>对比结果：</label>
             </div>
             <div>
-                <textarea id="result_output" rows="10"></textarea>
+                <textarea id="result_output" rows="9"></textarea>
             </div>
         </div>
     `;

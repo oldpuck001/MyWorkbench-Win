@@ -1,75 +1,139 @@
 #find_subset.py
 
-import pandas as pd
 import os
+import pandas as pd
 
-def find_subset():
+def find_subset_sheetnames_import(request):
 
-    target = 1062051.89
-    tolerance=0.01
+    file_path = request.get("data", {}).get("file_path", "")
 
-    file_path = os.path.join('C:\\Users\\lilei\\Desktop', 'book1.xlsx')
-    nums_df = pd.read_excel(file_path)
+    sheet_file = pd.ExcelFile(file_path)
+    sheetnames = sheet_file.sheet_names
 
-    # 将第一列转换为列表
-    numbers = nums_df.iloc[:, 0].tolist()
-    print(numbers)
+    return ['find_subset_sheetnames_import', sheetnames]
 
-    # 首先尝试将浮点数转换为整数进行处理
-    scaled_numbers = [round(num * 100) for num in numbers]
-    scaled_target = round(target * 100)
-    
-    # 整数版本的动态规划
-    dp = {0: []}
-    for num in scaled_numbers:
-        print(num)
+
+def find_subset_columns_index(request):
+
+    file_path = request.get("data", {}).get("file_path", "")
+    sheet_name = request.get("data", {}).get("sheet_name", "")
+
+    file_extension = os.path.splitext(file_path)[1].lower()
+
+    if file_extension == '.xlsx':
+        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='openpyxl')
+    elif file_extension == '.xls':
+        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='xlrd')
+
+    columns = df.columns.tolist()
+
+    return ['find_subset_columns_index', columns]
+
+
+def find_subset_import(request):
+
+    file_path = request.get("data", {}).get("file_path", "")
+    sheet_name = request.get("data", {}).get("sheet_name", "")
+    target_value = request.get("data", {}).get("target_value", "")
+    value_name = request.get("data", {}).get("value_name", "")
+    value_num = request.get("data", {}).get("value_num", "")
+
+    file_extension = os.path.splitext(file_path)[1].lower()
+
+    if file_extension == '.xlsx':
+        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='openpyxl')
+    elif file_extension == '.xls':
+        df = pd.read_excel(file_path, sheet_name=sheet_name, engine='xlrd')
+
+    df = df.fillna('N/A')
+    df_rename = df.rename(columns={target_value: 'target_value', value_name: 'name_value', value_num: 'num_value'})
+    data_import = df_rename.to_dict(orient='dict')
+
+    return ['find_subset_import', data_import]
+
+
+def find_subset_export(request):
+
+    export_file_path = request.get("data", {}).get("savePath", "")
+    target_value = request.get("data", {}).get("target_value", 0.0)
+    value_name = request.get("data", {}).get("value_name", [])
+    value_num = request.get("data", {}).get("value_num", [])
+
+    # 转换目标值为 float
+    target_value = float(str(target_value).replace(',', '').strip() or 0)
+
+    # 清洗 value_num，把千分位字符串转为 float，空白或非法输入设为 0.0
+    cleaned_value_num = []
+    for val in value_num:
+        try:
+            num = float(str(val).replace(',', '').strip())
+        except (ValueError, TypeError):
+            num = 0.0
+        cleaned_value_num.append(num)
+
+    # 仅剔除数值为 0 的项，保留名称为空的项
+    valid_pairs = [
+        (name, num)
+        for name, num in zip(value_name, cleaned_value_num)
+        if num != 0.0
+    ]
+
+    # 若没有有效数据，直接导出提示
+    if not valid_pairs:
+        df_empty = pd.DataFrame([["无有效数据（所有数值均为 0）"]], columns=["提示"])
+        df_empty.to_excel(export_file_path, index=False)
+        result_text = {'result_message': f'无有效数据（所有数值均为 0），已保存提示信息到：{export_file_path}'}
+        return ['find_subset_export', result_text]
+
+    tolerance = 0.01
+
+    dp = {0.0: [[]]}
+    results = []
+
+    for name, num in valid_pairs:
         new_dp = {}
-        for s in dp:
-            new_sum = s + num
-            if new_sum not in dp and new_sum not in new_dp:
-                new_dp[new_sum] = dp[s] + [num]
-        dp.update(new_dp)
-    
-    # 在整数版本中寻找最佳匹配
-    best_diff = float('inf')
-    best_subset = None
-    for s in dp:
-        current_diff = abs(s - scaled_target)
-        if current_diff <= tolerance * 100 and current_diff < best_diff:
-            best_diff = current_diff
-            best_subset = [num / 100 for num in dp[s]]
-    
-    if best_diff <= tolerance * 100:
-        return best_subset
-    
-    # 如果整数版本没有找到足够接近的解，尝试浮点数版本（带容差）
-    dp_float = {0: []}
-    for num in numbers:
-        print(num)
-        new_dp = {}
-        for s in dp_float:
-            new_sum = s + num
-            # 检查是否足够接近目标
-            if abs(new_sum - target) <= tolerance:
-                return dp_float[s] + [num]
-            if new_sum not in dp_float and new_sum not in new_dp:
-                new_dp[new_sum] = dp_float[s] + [num]
-        dp_float.update(new_dp)
-    
-    # 在浮点数版本中寻找最接近的解
-    best_diff = float('inf')
-    best_subset = None
-    for s in dp_float:
-        current_diff = abs(s - target)
-        if current_diff < best_diff:
-            best_diff = current_diff
-            best_subset = dp_float[s]
-    
-    if best_diff <= tolerance:
-        return best_subset
-    else:
-        return None
+        for current_sum in dp:
+            new_sum = current_sum + num
+            subset_list = dp[current_sum]
+            for subset in subset_list:
+                new_subset = subset + [(name, num)]
+                if abs(new_sum - target_value) <= tolerance:
+                    results.append(new_subset)
+                if new_sum not in new_dp:
+                    new_dp[new_sum] = []
+                new_dp[new_sum].append(new_subset)
+        for k, v in new_dp.items():
+            if k not in dp:
+                dp[k] = []
+            dp[k].extend(v)
 
+    if not results:
+        df_empty = pd.DataFrame([["未找到满足条件的组合"]], columns=["提示"])
+        df_empty.to_excel(export_file_path, index=False)
+        result_text = {'result_message': f'未找到满足条件的组合，已保存提示信息到：{export_file_path}'}
+        return ['find_subset_export', result_text]
 
-result = find_subset()
-print(result)
+    # 输出结果，每组加小计和空行
+    output_data = []
+    for idx, subset in enumerate(results, 1):
+        total = 0.0
+        for name, num in subset:
+            output_data.append({
+                "组合编号": f"组合 {idx}",
+                "名称": name,
+                "数值": round(num, 2)
+            })
+            total += num
+        output_data.append({
+            "组合编号": f"组合 {idx}",
+            "名称": "小计",
+            "数值": round(total, 2)
+        })
+        output_data.append({})  # 空行分隔
+
+    df_result = pd.DataFrame(output_data)
+
+    df_result.to_excel(export_file_path, index=False)
+
+    result_text = {'result_message': f'已导出 {len(results)} 个满足条件的组合到：{export_file_path}'}
+    return ['find_subset_export', result_text]

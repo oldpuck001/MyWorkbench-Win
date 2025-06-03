@@ -26,7 +26,10 @@ import { fillFunction } from './data_analysis_tools/fill.js';
 import { bank_statement_sortFunction } from './data_analysis_tools/bank_statement_sort.js';
 import { generate_chronological_accountFunction } from './data_analysis_tools/generate_chronological_account.js';
 
-import { text_comparisonFunction } from './other_tools/text_comparison.js'
+import { find_subset } from './other_tools/find_subset.js'
+import { text_comparison } from './other_tools/text_comparison.js'
+import { docx_comparison } from './other_tools/docx_comparison.js'
+import { xlsx_comparison } from './other_tools/xlsx_comparison.js'
 
 document.querySelectorAll('.sidebar > ul > li').forEach(item => {
     item.addEventListener('click', function(e) {
@@ -159,6 +162,18 @@ window.excel_tools_generate_chronological_accountFunction = function() {
     generate_chronological_accountFunction();
 }
 
-window.other_tools_text_comparisonFunction = function() {
-    text_comparisonFunction();
+window.find_subset = function() {
+    find_subset();
+}
+
+window.text_comparison = function() {
+    text_comparison();
+}
+
+window.docx_comparison = function() {
+    docx_comparison();
+}
+
+window.xlsx_comparison = function() {
+    xlsx_comparison();
 }

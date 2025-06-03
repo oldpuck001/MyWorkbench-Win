@@ -150,6 +150,24 @@ h1 {
     margin-bottom: 10px;                    /* 每个输入行之间的间距 */
 }
 
+/* 多行 */
+.rows {
+    display: flex;                          /* 使用 Flexbox 布局 */
+    flex-direction: column;                 /* 设置子元素按垂直方向排列 */
+    align-items: center;                    /* 让子元素在交叉轴上居中对齐（水平方向） */
+    width: 80%;                             /* 设置容器的宽度为父元素的80% */
+    margin-left: 100px;                     /* 设置容器的左外边距为100像素 */
+}
+
+/* 输入框行布局 */
+.rows > div {
+    display: flex;                          /* 启用 Flexbox，使 label 和 input 同一行 */
+    align-items: center;                    /* 让输入框和标签垂直居中对齐 */
+    justify-content: flex-start;            /* 保持 label 和 input 左对齐 */
+    width: 100%;                            /* 设置容器的宽度为父元素的100% */
+    margin-bottom: 10px;                    /* 每个输入行之间的间距 */
+}
+
 /* 让 label 保持统一宽度 */
 label {
     display: inline-block;                  /* 让 label 变成块级元素但保持 inline 样式 */
