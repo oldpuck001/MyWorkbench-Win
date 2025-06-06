@@ -1,4 +1,4 @@
-# xlsx_comparision.py
+# xlsx_comparison.py
 
 import os
 import pandas as pd
